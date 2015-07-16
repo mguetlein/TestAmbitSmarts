@@ -36,12 +36,19 @@ public class TestAmbit
 	}
 
 	@Test
-	public void smirksWithCisTrans_rule3908()
+	void ringSplitArom_rule4224_ar13()
 	{
-		String smirks = "[#8;H1:2]-[c:12]1[c:7](-[#8;H1:1])[c;R1:8]([#1,#6,#9,#17,#35,#53;A:3])[c;R1:9](-[!#16:6])[c;R1:10](-[!#8!#16:5])[c;R1:11]1-[#1,#6,#7:4]>>[#8-:2]-[#6:12](=O)-[#6:7](=[O:1])-[#6:8]([#1,#6,#9,#17,#35,#53;A:3])-[#6:9](\\[!#16:6])=[#6:10]\\[!#8!#16:5].[O-]-[#6:11](-[#1,#6,#7:4])=O";
-		String smi = "C";
-		List<String> s = applySmirks(smirks, smi);
-		Assert.assertNotNull("SMIRKS parsing should not fail", s);
+		String smirks = "[#8;H:2]-[#6:10]1:[#6:5](-[#8;H:1]):[#6:6](-[*,#1:11]):[#6:7]:[#6:8]:[#6,#7:9]:1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
+		String smi = "O-C(=C-C=C-C=O)C([O-])=O";
+		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
+	}
+
+	@Test
+	void ringSplitKekulized_rule4224_ar13()
+	{
+		String smirks = "[#8;H:2]-[#6:10]1=[#6:5](-[#8;H:1])-[#6:6](-[*,#1:11])=[#6:7]-[#6:8]=[#6,#7:9]-1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
+		String smi = "O-C(=C-C=C-C=O)C([O-])=O";
+		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
 	}
 
 	@Test
@@ -52,6 +59,17 @@ public class TestAmbit
 		String smi = "CC1(C)C2CC1C(CO)=CC2";
 		List<String> s = applySmirks(smirks, smi);
 		Assert.assertFalse("Results should not be empty", s.isEmpty());
+	}
+
+	// cis/trans smirks do not throw error anymore
+
+	@Test
+	public void smirksWithCisTrans_rule3908()
+	{
+		String smirks = "[#8;H1:2]-[c:12]1[c:7](-[#8;H1:1])[c;R1:8]([#1,#6,#9,#17,#35,#53;A:3])[c;R1:9](-[!#16:6])[c;R1:10](-[!#8!#16:5])[c;R1:11]1-[#1,#6,#7:4]>>[#8-:2]-[#6:12](=O)-[#6:7](=[O:1])-[#6:8]([#1,#6,#9,#17,#35,#53;A:3])-[#6:9](\\[!#16:6])=[#6:10]\\[!#8!#16:5].[O-]-[#6:11](-[#1,#6,#7:4])=O";
+		String smi = "C";
+		List<String> s = applySmirks(smirks, smi);
+		Assert.assertNotNull("SMIRKS parsing should not fail", s);
 	}
 
 	public static List<String> applySmirks(String smrk, String smi)
@@ -106,6 +124,6 @@ public class TestAmbit
 	public static void main(String[] args)
 	{
 		TestAmbit t = new TestAmbit();
-		t.complexCarbonStructure_rule3803_c0630();
+		t.ringSplitKekulized_rule4224_ar13();
 	}
 }
