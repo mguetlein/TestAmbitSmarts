@@ -36,7 +36,7 @@ public class TestAmbit
 	}
 
 	@Test
-	void ringSplitArom_rule4224_ar13()
+	public void ringSplitArom_rule4224_ar13()
 	{
 		String smirks = "[#8;H:2]-[#6:10]1:[#6:5](-[#8;H:1]):[#6:6](-[*,#1:11]):[#6:7]:[#6:8]:[#6,#7:9]:1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
 		String smi = "O-C(=C-C=C-C=O)C([O-])=O";
@@ -44,7 +44,7 @@ public class TestAmbit
 	}
 
 	@Test
-	void ringSplitKekulized_rule4224_ar13()
+	public void ringSplitKekulized_rule4224_ar13()
 	{
 		String smirks = "[#8;H:2]-[#6:10]1=[#6:5](-[#8;H:1])-[#6:6](-[*,#1:11])=[#6:7]-[#6:8]=[#6,#7:9]-1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
 		String smi = "O-C(=C-C=C-C=O)C([O-])=O";
