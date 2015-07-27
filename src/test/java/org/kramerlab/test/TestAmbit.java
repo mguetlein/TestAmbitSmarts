@@ -25,20 +25,11 @@ import ambit2.smarts.SmartsHelper;
 @RunWith(JUnit4.class)
 public class TestAmbit
 {
-	@Test
-	public void oneHToMany_rule3769_c0107()
-	{
-		String smirks = "[#8H1:7]-[#6:6](-[#6:8](-[#8-:9])=[O:10])=[#6:5](-[#1,#6,#17:11])-[#6:1]=[#6:2]-[#6;R0:3](-[#1,#6,#16:13])=[O:12]>>[#8-:9]-[#6:8](=[O:10])-[#6:6](=[O:7])-[#6:5](-[#1,#6,#17:11])-[#6:1]=[#6:2].[O-]-[#6:3](-[#1,#6,#16:13])=[O:12]";
-		String smi = "O-C(=C-C=C-C=O)C([O-])=O";
-		List<String> s = applySmirks(smirks, smi);
-		for (String p : s)
-			Assert.assertFalse("should not contain [OH]= : '" + p + "'", p.contains("[OH]="));
-	}
 
 	@Test
 	public void ringSplitArom_rule4224_ar13()
 	{
-		String smirks = "[#8;H:2]-[#6:10]1:[#6:5](-[#8;H:1]):[#6:6](-[*,#1:11]):[#6:7]:[#6:8]:[#6,#7:9]:1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
+		String smirks = "[#8;H1:2]-[#6:10]1:[#6:5](-[#8;H1:1]):[#6:6](-[*,#1:11]):[#6:7]:[#6:8]:[#6,#7:9]:1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
 		String smi = "O-C(=C-C=C-C=O)C([O-])=O";
 		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
 	}
@@ -46,7 +37,7 @@ public class TestAmbit
 	@Test
 	public void ringSplitKekulized_rule4224_ar13()
 	{
-		String smirks = "[#8;H:2]-[#6:10]1=[#6:5](-[#8;H:1])-[#6:6](-[*,#1:11])=[#6:7]-[#6:8]=[#6,#7:9]-1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
+		String smirks = "[#8;H1:2]-[#6:10]1=[#6:5](-[#8;H1:1])-[#6:6](-[*,#1:11])=[#6:7]-[#6:8]=[#6,#7:9]-1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
 		String smi = "O-C(=C-C=C-C=O)C([O-])=O";
 		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
 	}
@@ -59,6 +50,19 @@ public class TestAmbit
 		String smi = "CC1(C)C2CC1C(CO)=CC2";
 		List<String> s = applySmirks(smirks, smi);
 		Assert.assertFalse("Results should not be empty", s.isEmpty());
+	}
+
+	// fixed by chaning the smirks
+
+	@Test
+	public void oneHToMany_rule3769_c0107()
+	{
+		//String smirks = "[#8H1:7]-[#6:6](-[#6:8](-[#8-:9])=[O:10])=[#6:5](-[#1,#6,#17:11])-[#6:1]=[#6:2]-[#6;R0:3](-[#1,#6,#16:13])=[O:12]>>[#8-:9]-[#6:8](=[O:10])-[#6:6](=[O:7])-[#6:5](-[#1,#6,#17:11])-[#6:1]=[#6:2].[O-]-[#6:3](-[#1,#6,#16:13])=[O:12]";
+		String smirks = "[H][#8:7]-[#6:6](-[#6:8](-[#8-:9])=[O:10])=[#6:5](-[#1,#6,#17:11])-[#6:1]=[#6:2]-[#6;R0:3](-[#1,#6,#16:13])=[O:12]>>[#8-:9]-[#6:8](=[O:10])-[#6:6](=[O:7])-[#6:5](-[#1,#6,#17:11])-[#6:1]=[#6:2].[O-]-[#6:3](-[#1,#6,#16:13])=[O:12]";
+		String smi = "O-C(=C-C=C-C=O)C([O-])=O";
+		List<String> s = applySmirks(smirks, smi);
+		for (String p : s)
+			Assert.assertFalse("should not contain [OH]= : '" + p + "'", p.contains("[OH]="));
 	}
 
 	// cis/trans smirks do not throw error anymore
@@ -124,6 +128,6 @@ public class TestAmbit
 	public static void main(String[] args)
 	{
 		TestAmbit t = new TestAmbit();
-		t.ringSplitKekulized_rule4224_ar13();
+		t.ringSplitArom_rule4224_ar13();
 	}
 }
