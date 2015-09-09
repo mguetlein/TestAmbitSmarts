@@ -49,7 +49,8 @@
   </build>
   
   <properties>
-     <cdk.version>1.5.10</cdk.version>
+     <cdk.version>1.5.12-SNAPSHOT</cdk.version>
+    <ambit.version>3.0.0-SNAPSHOT</ambit.version>
   </properties>
   
   
@@ -274,15 +275,152 @@
       <version>${cdk.version}</version>
      </dependency>-->
   
-   <dependency>
+<!-- ambit smarts library -->
+    <dependency>
       <groupId>ambit</groupId>
       <artifactId>ambit2-smarts</artifactId>
-      <version>3.0.0-SNAPSHOT</version><!-- -SNAPSHOT -->
+      <version>${ambit.version}</version>
+      
+      <!-- prevent ambit from loading cdk to avoid version conflict -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.openscience.cdk</groupId>
+          <artifactId>cdk-extra</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.openscience.cdk</groupId>
+          <artifactId>cdk-qsar</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.openscience.cdk</groupId>
+          <artifactId>cdk-ionpot</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.openscience.cdk</groupId>
+          <artifactId>cdk-qsarmolecular</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.openscience.cdk</groupId>
+          <artifactId>cdk-qsarionpot</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.openscience.cdk</groupId>
+          <artifactId>cdk-libiocml</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.openscience.cdk</groupId>
+          <artifactId>cdk-log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.openscience.cdk</groupId>
+          <artifactId>cdk-inchi</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.openscience.cdk</groupId>
+          <artifactId>cdk-data</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.openscience.cdk</groupId>
+          <artifactId>cdk-dict</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.openscience.cdk</groupId>
+          <artifactId>cdk-structgen</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.openscience.cdk</groupId>
+          <artifactId>cdk-qsarprotein</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.openscience.cdk</groupId>
+          <artifactId>cdk-pdb</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.openscience.cdk</groupId>
+          <artifactId>cdk-pdbcml</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.openscience.cdk</groupId>
+          <artifactId>cdk-fingerprint</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-       <dependency>
-      <groupId>ambit</groupId>
-      <artifactId>ambit2-core</artifactId>
-      <version>3.0.0-SNAPSHOT</version><!-- -SNAPSHOT -->
+    	
+	<!-- adding all cdk dependencies that ambit requires with defined version -->	
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-extra</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-qsar</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-ionpot</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-qsarmolecular</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-qsarionpot</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-libiocml</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-log4j</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-inchi</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-data</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-dict</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-structgen</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-qsarprotein</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-pdb</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-pdbcml</artifactId>
+      <version>${cdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openscience.cdk</groupId>
+      <artifactId>cdk-fingerprint</artifactId>
+      <version>${cdk.version}</version>
     </dependency>
     
         <dependency>
