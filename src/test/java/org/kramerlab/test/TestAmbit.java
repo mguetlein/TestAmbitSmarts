@@ -8,8 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomContainerSet;
@@ -28,14 +26,6 @@ import ambit2.smarts.SmartsHelper;
 public class TestAmbit
 {
 	@Test
-	public void ringSplitArom_rule4287()
-	{
-		String smirks = "[#8-:10]-[#6:9](=[O:11])-[#6:1]-1=[CH1]-[#6;H1:5]=[#6;H1:4]-[#6;H1:3]=[#6;H1:2]-1>>O-[#6:5](=O)-[#6;H2:4]\\[#6;H1:3]=[#6;H1:2]/[#6;H2:1]-[#6:9](-[#8-:10])=[O:11]";
-		String smi = "[O-]C(=O)c1ccccc1";
-		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
-	}
-
-	@Test
 	public void ringSplitArom_rule4224_ar13()
 	{
 		String smirks = "[#8;H1:2]-[#6:10]1:[#6:5](-[#8;H1:1]):[#6:6](-[*,#1:11]):[#6:7]:[#6:8]:[#6,#7:9]:1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
@@ -48,6 +38,14 @@ public class TestAmbit
 	{
 		String smirks = "[#8;H1:2]-[#6:10]1=[#6:5](-[#8;H1:1])-[#6:6](-[*,#1:11])=[#6:7]-[#6:8]=[#6,#7:9]-1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
 		String smi = "O-C(=C-C=C-C=O)C([O-])=O";
+		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
+	}
+
+	@Test
+	public void anotherRingSplit_rule4287()
+	{
+		String smirks = "[#8-:10]-[#6:9](=[O:11])-[#6:1]-1=[CH1]-[#6;H1:5]=[#6;H1:4]-[#6;H1:3]=[#6;H1:2]-1>>O-[#6:5](=O)-[#6;H2:4]\\[#6;H1:3]=[#6;H1:2]/[#6;H2:1]-[#6:9](-[#8-:10])=[O:11]";
+		String smi = "O=C([O-])C1=CC=CC=C1";
 		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
 	}
 
@@ -137,6 +135,6 @@ public class TestAmbit
 	public static void main(String[] args)
 	{
 		TestAmbit t = new TestAmbit();
-		t.ringSplitArom_rule4287();
+		t.anotherRingSplit_rule4287();
 	}
 }
