@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openscience.cdk.CDKConstants;
+import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomContainerSet;
@@ -25,6 +27,13 @@ import ambit2.smarts.SmartsHelper;
 @RunWith(JUnit4.class)
 public class TestAmbit
 {
+	@Test
+	public void ringSplitArom_rule4287()
+	{
+		String smirks = "[#8-:10]-[#6:9](=[O:11])-[#6:1]-1=[CH1]-[#6;H1:5]=[#6;H1:4]-[#6;H1:3]=[#6;H1:2]-1>>O-[#6:5](=O)-[#6;H2:4]\\[#6;H1:3]=[#6;H1:2]/[#6;H2:1]-[#6:9](-[#8-:10])=[O:11]";
+		String smi = "[O-]C(=O)c1ccccc1";
+		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
+	}
 
 	@Test
 	public void ringSplitArom_rule4224_ar13()
@@ -128,6 +137,6 @@ public class TestAmbit
 	public static void main(String[] args)
 	{
 		TestAmbit t = new TestAmbit();
-		t.ringSplitArom_rule4224_ar13();
+		t.ringSplitArom_rule4287();
 	}
 }
