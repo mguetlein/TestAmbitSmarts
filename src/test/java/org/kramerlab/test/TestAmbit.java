@@ -88,7 +88,7 @@ public class TestAmbit
 		try
 		{
 			SMIRKSManager smrkMan = new SMIRKSManager(SilentChemObjectBuilder.getInstance());
-			smrkMan.setFlagSSMode(SmartsConst.SSM_NON_IDENTICAL_FIRST);
+			smrkMan.setFlagSSMode(SmartsConst.SSM_MODE.SSM_NON_IDENTICAL_FIRST);
 			smrkMan.setFlagProcessResultStructures(true);
 			smrkMan.setFlagClearHybridizationBeforeResultProcess(true);
 			smrkMan.setFlagClearImplicitHAtomsBeforeResultProcess(true);
@@ -116,7 +116,7 @@ public class TestAmbit
 			CDKHueckelAromaticityDetector.detectAromaticity(target);
 
 			IAtomContainerSet resSet2 = smrkMan.applyTransformationWithSingleCopyForEachPos(target, null, reaction,
-					SmartsConst.SSM_ALL);
+					SmartsConst.SSM_MODE.SSM_ALL);
 			List<String> result = new ArrayList<String>();
 			if (resSet2 != null)
 				for (int i = 0; i < resSet2.getAtomContainerCount(); i++)
