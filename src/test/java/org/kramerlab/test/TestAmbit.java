@@ -26,6 +26,15 @@ import ambit2.smarts.SmartsHelper;
 public class TestAmbit
 {
 	@Test
+	public void stereoChemIsLost_rule4212_u136348()
+	{
+		String smirks = "[H:6][C:1]([#6:4])([#16;H1v2])[#1,#6:5]>>[H:6][C:1]([H])([#6:4])[#1,#6:5]";
+		String smi = "CN\\C(NCCS)=C\\[N+]([O-])=O";
+		List<String> s = applySmirks(smirks, smi);
+		Assert.assertTrue("Results should still contain stereocheminfo: " + s.get(0), s.get(0).contains("\\"));
+	}
+
+	@Test
 	public void ringSplitArom_rule4224_ar13()
 	{
 		String smirks = "[#8;H1:2]-[#6:10]1:[#6:5](-[#8;H1:1]):[#6:6](-[*,#1:11]):[#6:7]:[#6:8]:[#6,#7:9]:1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
@@ -135,6 +144,6 @@ public class TestAmbit
 	public static void main(String[] args)
 	{
 		TestAmbit t = new TestAmbit();
-		t.anotherRingSplit_rule4287();
+		t.stereoChemIsLost_rule4212_u136348();
 	}
 }
