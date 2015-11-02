@@ -68,7 +68,7 @@ public class TestAmbit
 		Assert.assertFalse("Results should not be empty", s.isEmpty());
 	}
 
-	// fixed by chaning the smirks
+	// fixed by changing the smirks
 
 	@Test
 	public void oneHToMany_rule3769_c0107()
@@ -90,6 +90,16 @@ public class TestAmbit
 		String smi = "C";
 		List<String> s = applySmirks(smirks, smi);
 		Assert.assertNotNull("SMIRKS parsing should not fail", s);
+	}
+
+	// working, problem was non-kekulized input
+	@Test
+	public void yetAnotherRingSplit_rule4185_u132707()
+	{
+		String smirks = "[#8:7]([H])-[c:2]1[c:6]([H])[c:5]([H])[c:4](-[#8:8]([H]))[n:1][c:3]([H])1>>[#8-:7]-[#6:2](=O)[#6:6]=[#6:5]/[#6:4](=[O:8])-[#7:1]-[#6:3]=O";
+		String smi = "C1=CC(=NC=C1O)O";
+		List<String> s = applySmirks(smirks, smi);
+		Assert.assertTrue("Results should not contain C(=C=C: " + s.get(0), s.get(0).contains("C(=C=C"));
 	}
 
 	public static List<String> applySmirks(String smrk, String smi)
@@ -144,6 +154,6 @@ public class TestAmbit
 	public static void main(String[] args)
 	{
 		TestAmbit t = new TestAmbit();
-		t.stereoChemIsLost_rule4212_u136348();
+		t.yetAnotherRingSplit_rule4185_u132707();
 	}
 }
