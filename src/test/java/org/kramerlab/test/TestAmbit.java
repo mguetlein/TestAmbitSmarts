@@ -13,6 +13,8 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
+import org.openscience.cdk.smiles.SmilesGenerator;
+import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
@@ -20,7 +22,6 @@ import ambit2.core.helper.CDKHueckelAromaticityDetector;
 import ambit2.smarts.SMIRKSManager;
 import ambit2.smarts.SMIRKSReaction;
 import ambit2.smarts.SmartsConst;
-import ambit2.smarts.SmartsHelper;
 
 @RunWith(JUnit4.class)
 public class TestAmbit
@@ -121,7 +122,7 @@ public class TestAmbit
 			if (!smrkMan.getErrors().equals(""))
 				throw new RuntimeException("Invalid SMIRKS: " + smrkMan.getErrors());
 
-			IAtomContainer target = SmartsHelper.getMoleculeFromSmiles(smi);
+			IAtomContainer target = new SmilesParser(SilentChemObjectBuilder.getInstance()).parseSmiles(smi);
 			for (IAtom atom : target.atoms())
 				if (atom.getFlag(CDKConstants.ISAROMATIC))
 					atom.setFlag(CDKConstants.ISAROMATIC, false);
@@ -139,7 +140,12 @@ public class TestAmbit
 			List<String> result = new ArrayList<String>();
 			if (resSet2 != null)
 				for (int i = 0; i < resSet2.getAtomContainerCount(); i++)
-					result.add(SmartsHelper.moleculeToSMILES(resSet2.getAtomContainer(i), true));
+				{
+					IAtomContainer mol = resSet2.getAtomContainer(i);
+					mol = AtomContainerManipulator.copyAndSuppressedHydrogens(mol);
+					String smiles = SmilesGenerator.absolute().create(mol);
+					result.add(smiles);
+				}
 			return result;
 		}
 		catch (Exception e)
@@ -154,6 +160,6 @@ public class TestAmbit
 	public static void main(String[] args)
 	{
 		TestAmbit t = new TestAmbit();
-		t.yetAnotherRingSplit_rule4185_u132707();
+		t.stereoChemIsLost_rule4212_u136348();
 	}
 }
