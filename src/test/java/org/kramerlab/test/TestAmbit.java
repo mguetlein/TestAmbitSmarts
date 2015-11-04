@@ -142,7 +142,7 @@ public class TestAmbit
 				for (int i = 0; i < resSet2.getAtomContainerCount(); i++)
 				{
 					IAtomContainer mol = resSet2.getAtomContainer(i);
-					mol = AtomContainerManipulator.copyAndSuppressedHydrogens(mol);
+					AtomContainerManipulator.suppressHydrogens(mol);
 					String smiles = SmilesGenerator.absolute().create(mol);
 					result.add(smiles);
 				}
