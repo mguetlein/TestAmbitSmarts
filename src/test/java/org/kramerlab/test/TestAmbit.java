@@ -69,6 +69,14 @@ public class TestAmbit
 		Assert.assertFalse("Results should not be empty", s.isEmpty());
 	}
 
+	@Test
+	public void ringSplitHeteroAtom_rule4294_u78282()
+	{
+		String smirks = "[O:8]=[c:2]1[c:3][c:4][c:5][c:6][o:1]1>>[#8:1]([H])\\[#6:6]=[#6:5]/[#6:4]=[#6:3]\\[#6:2](-[#8-])=[O:8]";
+		String smi = "C1=CC=C2C(=C1)C=CC(=O)O2";
+		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
+	}
+
 	// fixed by changing the smirks
 
 	@Test
@@ -160,6 +168,6 @@ public class TestAmbit
 	public static void main(String[] args)
 	{
 		TestAmbit t = new TestAmbit();
-		t.stereoChemIsLost_rule4212_u136348();
+		t.ringSplitHeteroAtom_rule4294_u78282();
 	}
 }
