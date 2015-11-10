@@ -10,6 +10,7 @@ import org.junit.runners.JUnit4;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.aromaticity.Aromaticity;
 import org.openscience.cdk.aromaticity.ElectronDonation;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.graph.Cycles;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -101,6 +102,26 @@ public class TestAmbit
 		smi = "C(CN(CCCl)CC(C(=O)O)N)Cl";
 		s = applySmirks(smirks, smi);
 		Assert.assertFalse("Results should NOT contain [O]: " + s.get(0), s.get(0).contains("[O]"));
+	}
+
+	@Test
+	public void makeRingAromatic_rule3667_u9685()
+	{
+		String smirks = "[#8:7]([H])-[#6:1]([H])-1-[#6:2]=[#6:3]-[#6:4]=[#6:5]-[#6:6]([H])-1-[#8:8]([H])>>[#8:7]([H])-[c:1]1[c:2][c:3][c:4][c:5][c:6]1-[#8:8]([H])";
+		String smi = "C1=C[C@@H]([C@@H](C(=C1)C2=CC=C(C=C2)Cl)O)O";
+		String expectedSmiles;
+		try
+		{
+			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
+					.parseSmiles("Oc1cccc(c1O)-c1ccc(Cl)cc1");
+			expectedSmiles = SmilesGenerator.absolute().create(mol);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+		List<String> s = applySmirks(smirks, smi);
+		Assert.assertEquals("Result be aromatic", expectedSmiles, s.get(0));
 	}
 
 	// fixed by changing the smirks
@@ -197,10 +218,10 @@ public class TestAmbit
 		}
 	}
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws CDKException
 	{
 		TestAmbit t = new TestAmbit();
 		//		t.missingProducts_rule2793_u26103();
-		t.retainUnfilledValence_rule1196_u133400();
+		t.makeRingAromatic_rule3667_u9685();
 	}
 }
