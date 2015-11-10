@@ -8,6 +8,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openscience.cdk.CDKConstants;
+import org.openscience.cdk.aromaticity.Aromaticity;
+import org.openscience.cdk.aromaticity.ElectronDonation;
+import org.openscience.cdk.graph.Cycles;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomContainerSet;
@@ -15,10 +18,8 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.smiles.SmilesParser;
-import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
-import ambit2.core.helper.CDKHueckelAromaticityDetector;
 import ambit2.smarts.SMIRKSManager;
 import ambit2.smarts.SMIRKSReaction;
 import ambit2.smarts.SmartsConst;
@@ -86,6 +87,22 @@ public class TestAmbit
 		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
 	}
 
+	@Test
+	public void retainUnfilledValence_rule1196_u133400()
+	{
+		// the unfilled valence of nitrogen (-> [N]) should remaine unchanged
+		String smirks = "[H][#6:1](-[#6:5])=[O:4]>>[#6:5]-[#6:1](-[#8-])=[O:4]";
+		String smi = "C[N]C(=O)C(=O)C=O";
+		List<String> s = applySmirks(smirks, smi);
+		Assert.assertTrue("Results should still contain [N]: " + s.get(0), s.get(0).contains("[N]"));
+
+		// however, at the same time, Hs should be added to newly created atoms  
+		smirks = "[H:5][C:1]([#6:6])([#1,#9,#17,#35,#53:4])[#9,#17,#35,#53]>>[H:5][C:1]([#6:6])([#8])[#1,#9,#17,#35,#53:4]";
+		smi = "C(CN(CCCl)CC(C(=O)O)N)Cl";
+		s = applySmirks(smirks, smi);
+		Assert.assertFalse("Results should NOT contain [O]: " + s.get(0), s.get(0).contains("[O]"));
+	}
+
 	// fixed by changing the smirks
 
 	@Test
@@ -146,11 +163,17 @@ public class TestAmbit
 			for (IBond bond : target.bonds())
 				if (bond.getFlag(CDKConstants.ISAROMATIC))
 					bond.setFlag(CDKConstants.ISAROMATIC, false);
-			AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(target);
-			CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance(SilentChemObjectBuilder.getInstance());
-			adder.addImplicitHydrogens(target);
+			// do not add Hs: https://sourceforge.net/p/cdk/mailman/message/34608714/
+			//			AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(target);
+			//			CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance(SilentChemObjectBuilder.getInstance());
+			//			adder.addImplicitHydrogens(target);
 			AtomContainerManipulator.convertImplicitToExplicitHydrogens(target);
-			CDKHueckelAromaticityDetector.detectAromaticity(target);
+
+			// for our project, we want to use daylight aromaticity
+			// CDKHueckelAromaticityDetector.detectAromaticity(target);
+			Aromaticity aromaticity = new Aromaticity(ElectronDonation.daylight(), Cycles.or(Cycles.all(),
+					Cycles.edgeShort()));
+			aromaticity.apply(target);
 
 			IAtomContainerSet resSet2 = smrkMan.applyTransformationWithSingleCopyForEachPos(target, null, reaction,
 					SmartsConst.SSM_MODE.SSM_ALL);
@@ -177,6 +200,7 @@ public class TestAmbit
 	public static void main(String[] args)
 	{
 		TestAmbit t = new TestAmbit();
-		t.missingProducts_rule2793_u26103();
+		//		t.missingProducts_rule2793_u26103();
+		t.retainUnfilledValence_rule1196_u133400();
 	}
 }
