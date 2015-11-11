@@ -29,12 +29,20 @@ import ambit2.smarts.SmartsConst;
 public class TestAmbit
 {
 	@Test
-	public void stereoChemIsLost_rule4212_u136348()
+	public void stereoChemIsLost2_rule1196_u45008()
 	{
-		String smirks = "[H:6][C:1]([#6:4])([#16;H1v2])[#1,#6:5]>>[H:6][C:1]([H])([#6:4])[#1,#6:5]";
-		String smi = "CN\\C(NCCS)=C\\[N+]([O-])=O";
+		String smirks = "[H][#6:1](-[#6:5])=[O:4]>>[#6:5]-[#6:1](-[#8-])=[O:4]";
+		String smi = "C(=O)[C@@H]1C(=O)C(C(=O)O1)(F)F";
 		List<String> s = applySmirks(smirks, smi);
-		Assert.assertTrue("Results should still contain stereocheminfo: " + s.get(0), s.get(0).contains("\\"));
+		Assert.assertTrue("Results should still contain stereocheminfo: " + s.get(0), s.get(0).contains("@"));
+	}
+
+	@Test
+	public void invalidStereoChemProduct_rule4120_u134670()
+	{
+		String smirks = "[#8-:15]-[#6:1](=[O:16])\\[#6:2]([H])=[#6:3]([H])/[#6:4](=[#6:5]([H])\\[#6:6](-[#8-:8])=[O:7])/S([#8-])(=O)=O>>[#8-:15]-[#6:1](=[O:16])-[#6:2]-[#6:3]-[#6:4](-[#8-])=O.[#6:5]-[#6:6](-[#8-:8])=[O:7]";
+		String smi = "C(=C/C(=O)[O-])/C(=C\\C(=O)[O-])/S(=O)(=O)[O-]";
+		Assert.assertNotNull("Reaction should not fail", applySmirks(smirks, smi));
 	}
 
 	@Test
@@ -124,8 +132,30 @@ public class TestAmbit
 		Assert.assertEquals("Result be aromatic", expectedSmiles, s.get(0));
 	}
 
-	// fixed by changing the smirks
+	//	@Test
+	//	public void ringSplitFails_rule3743_u137948()
+	//	{
+	//		String smirks = "[#6:3]-[#8:15]-[c;R:11]1[c:12](-[#8:2]([H]))[c:7](-[#8:1]([H]))[c;R:8]([#1,#6,#9,#17,#35,#53;A:4])[c;R:9](-[!#16,#1:6])[c;R:10]1-[!#8!#16,#1:5]>>[!#16,#1:6]\\\\\\[#6:9](=[#6:10](///[!#8!#16,#1:5])-[#6:11](-[#8:15])=O)-[#6:8]([#1,#6,#9,#17,#35,#53;A:4])-[#6:7](=[O:1])-[#6:12](-[#8-:2])=O.[#6:3]-[#8]";
+	//		String smi = "C1=CC2=CC(=C(C3=C2C(=C1)CC(=O)O3)O)O";
+	//
+	//		// working as expected on this smiles
+	//		// String smi = "CN1CCC23C=CC(CC2OC4=C3C(=CC(=C4O)O)C1)O";
+	//
+	//	}
 
+	// ---------- tests below have been fixed -------------------------
+
+	// fixed
+	@Test
+	public void stereoChemIsLost_rule4212_u136348()
+	{
+		String smirks = "[H:6][C:1]([#6:4])([#16;H1v2])[#1,#6:5]>>[H:6][C:1]([H])([#6:4])[#1,#6:5]";
+		String smi = "CN\\C(NCCS)=C\\[N+]([O-])=O";
+		List<String> s = applySmirks(smirks, smi);
+		Assert.assertTrue("Results should still contain stereocheminfo: " + s.get(0), s.get(0).contains("\\"));
+	}
+
+	// fixed by changing the smirks
 	@Test
 	public void oneHToMany_rule3769_c0107()
 	{
@@ -138,7 +168,6 @@ public class TestAmbit
 	}
 
 	// cis/trans smirks do not throw error anymore
-
 	@Test
 	public void smirksWithCisTrans_rule3908()
 	{
@@ -222,6 +251,6 @@ public class TestAmbit
 	{
 		TestAmbit t = new TestAmbit();
 		//		t.missingProducts_rule2793_u26103();
-		t.makeRingAromatic_rule3667_u9685();
+		t.invalidStereoChemProduct_rule4120_u134670();
 	}
 }
