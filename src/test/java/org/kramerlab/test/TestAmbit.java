@@ -38,14 +38,6 @@ public class TestAmbit
 	}
 
 	@Test
-	public void invalidStereoChemProduct_rule4120_u134670()
-	{
-		String smirks = "[#8-:15]-[#6:1](=[O:16])\\[#6:2]([H])=[#6:3]([H])/[#6:4](=[#6:5]([H])\\[#6:6](-[#8-:8])=[O:7])/S([#8-])(=O)=O>>[#8-:15]-[#6:1](=[O:16])-[#6:2]-[#6:3]-[#6:4](-[#8-])=O.[#6:5]-[#6:6](-[#8-:8])=[O:7]";
-		String smi = "C(=C/C(=O)[O-])/C(=C\\C(=O)[O-])/S(=O)(=O)[O-]";
-		Assert.assertNotNull("Reaction should not fail", applySmirks(smirks, smi));
-	}
-
-	@Test
 	public void ringSplitArom_rule4224_ar13()
 	{
 		String smirks = "[#8;H1:2]-[#6:10]1:[#6:5](-[#8;H1:1]):[#6:6](-[*,#1:11]):[#6:7]:[#6:8]:[#6,#7:9]:1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
@@ -97,22 +89,6 @@ public class TestAmbit
 	}
 
 	@Test
-	public void retainUnfilledValence_rule1196_u133400()
-	{
-		// the unfilled valence of nitrogen (-> [N]) should remaine unchanged
-		String smirks = "[H][#6:1](-[#6:5])=[O:4]>>[#6:5]-[#6:1](-[#8-])=[O:4]";
-		String smi = "C[N]C(=O)C(=O)C=O";
-		List<String> s = applySmirks(smirks, smi);
-		Assert.assertTrue("Results should still contain [N]: " + s.get(0), s.get(0).contains("[N]"));
-
-		// however, at the same time, Hs should be added to newly created atoms  
-		smirks = "[H:5][C:1]([#6:6])([#1,#9,#17,#35,#53:4])[#9,#17,#35,#53]>>[H:5][C:1]([#6:6])([#8])[#1,#9,#17,#35,#53:4]";
-		smi = "C(CN(CCCl)CC(C(=O)O)N)Cl";
-		s = applySmirks(smirks, smi);
-		Assert.assertFalse("Results should NOT contain [O]: " + s.get(0), s.get(0).contains("[O]"));
-	}
-
-	@Test
 	public void makeRingAromatic_rule3667_u9685()
 	{
 		String smirks = "[#8:7]([H])-[#6:1]([H])-1-[#6:2]=[#6:3]-[#6:4]=[#6:5]-[#6:6]([H])-1-[#8:8]([H])>>[#8:7]([H])-[c:1]1[c:2][c:3][c:4][c:5][c:6]1-[#8:8]([H])";
@@ -132,18 +108,35 @@ public class TestAmbit
 		Assert.assertEquals("Result be aromatic", expectedSmiles, s.get(0));
 	}
 
-	//	@Test
-	//	public void ringSplitFails_rule3743_u137948()
-	//	{
-	//		String smirks = "[#6:3]-[#8:15]-[c;R:11]1[c:12](-[#8:2]([H]))[c:7](-[#8:1]([H]))[c;R:8]([#1,#6,#9,#17,#35,#53;A:4])[c;R:9](-[!#16,#1:6])[c;R:10]1-[!#8!#16,#1:5]>>[!#16,#1:6]\\\\\\[#6:9](=[#6:10](///[!#8!#16,#1:5])-[#6:11](-[#8:15])=O)-[#6:8]([#1,#6,#9,#17,#35,#53;A:4])-[#6:7](=[O:1])-[#6:12](-[#8-:2])=O.[#6:3]-[#8]";
-	//		String smi = "C1=CC2=CC(=C(C3=C2C(=C1)CC(=O)O3)O)O";
-	//
-	//		// working as expected on this smiles
-	//		// String smi = "CN1CCC23C=CC(CC2OC4=C3C(=CC(=C4O)O)C1)O";
-	//
-	//	}
-
 	// ---------- tests below have been fixed -------------------------
+
+	// fixed by nick
+	@Test
+	public void invalidStereoChemProduct_rule4120_u134670()
+	{
+		String smirks = "[#8-:15]-[#6:1](=[O:16])\\[#6:2]([H])=[#6:3]([H])/[#6:4](=[#6:5]([H])\\[#6:6](-[#8-:8])=[O:7])/S([#8-])(=O)=O>>[#8-:15]-[#6:1](=[O:16])-[#6:2]-[#6:3]-[#6:4](-[#8-])=O.[#6:5]-[#6:6](-[#8-:8])=[O:7]";
+		String smi = "C(=C/C(=O)[O-])/C(=C\\C(=O)[O-])/S(=O)(=O)[O-]";
+		Assert.assertNotNull("Reaction should not fail", applySmirks(smirks, smi));
+	}
+
+	// as discussed with email in nick:
+	// actually: implict Hs should not be added to products
+	// instead: all smirks should state more explicitly what to do with Hs 
+	@Test
+	public void retainUnfilledValence_rule1196_u133400()
+	{
+		// the unfilled valence of nitrogen (-> [N]) should remaine unchanged
+		String smirks = "[H][#6:1](-[#6:5])=[O:4]>>[#6:5]-[#6:1](-[#8-])=[O:4]";
+		String smi = "C[N]C(=O)C(=O)C=O";
+		List<String> s = applySmirks(smirks, smi);
+		//Assert.assertTrue("Results should still contain [N]: " + s.get(0), s.get(0).contains("[N]"));
+
+		// however, at the same time, Hs should be added to newly created atoms  
+		smirks = "[H:5][C:1]([#6:6])([#1,#9,#17,#35,#53:4])[#9,#17,#35,#53]>>[H:5][C:1]([#6:6])([#8])[#1,#9,#17,#35,#53:4]";
+		smi = "C(CN(CCCl)CC(C(=O)O)N)Cl";
+		s = applySmirks(smirks, smi);
+		Assert.assertFalse("Results should NOT contain [O]: " + s.get(0), s.get(0).contains("[O]"));
+	}
 
 	// fixed
 	@Test
@@ -251,6 +244,6 @@ public class TestAmbit
 	{
 		TestAmbit t = new TestAmbit();
 		//		t.missingProducts_rule2793_u26103();
-		t.invalidStereoChemProduct_rule4120_u134670();
+		t.stereoChemIsLost2_rule1196_u45008();
 	}
 }
