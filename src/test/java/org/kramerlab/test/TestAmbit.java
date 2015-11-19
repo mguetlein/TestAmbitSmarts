@@ -28,13 +28,42 @@ import ambit2.smarts.SmartsConst;
 @RunWith(JUnit4.class)
 public class TestAmbit
 {
-	@Test
-	public void stereoChemIsLost2_rule1196_u45008()
+	public void stereoChemNotInserted_rule4230_u145861()
 	{
-		String smirks = "[H][#6:1](-[#6:5])=[O:4]>>[#6:5]-[#6:1](-[#8-])=[O:4]";
-		String smi = "C(=O)[C@@H]1C(=O)C(C(=O)O1)(F)F";
+		String smirks = "[#8-:11]-[#6:9](=[O:10])-[#6:1]([H])([H])-[c:2]1[c:3]([H])[c:4]([H])[c:5]([H])[c:6]([H])[c:7]([H])1>>[#8-:11]-[#6:9](=[O:10])\\[#6:1]([H])=[#6:2]-1\\[#6:7]([H])([H])-[#6:6]([H])=[#6:5]([H])-[#6:4]([H])=[#6:3]([H])-[#8]-1";
+		String smi = "C1=CC=C(C=C1)CC(=O)[O-]";
+		String expectedSmiles;
+		try
+		{
+			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
+					.parseSmiles("[O-]C(=O)\\C=C1\\CC=CC=CO1");
+			expectedSmiles = SmilesGenerator.absolute().create(mol);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
 		List<String> s = applySmirks(smirks, smi);
-		Assert.assertTrue("Results should still contain stereocheminfo: " + s.get(0), s.get(0).contains("@"));
+		Assert.assertEquals(expectedSmiles, s.get(0));
+	}
+
+	public void stereoChemLost3_rule3138_u138720()
+	{
+		String smirks = "[#8:1]([H])-[#6:2](-[#6:9](-[#8-:10])=[O:11])=[#6:3](-[#1,#6,#17:12])-[#6:4]=[#6:5]-[#6](-[#8-])=O>>[#8-:10]-[#6:9](=[O:11])-[#6:2](=[O:1])-[#6:3](-[#1,#6,#17:12])-[#6:4]=[#6:5]";
+		String smi = "C(=C(/C(=O)[O-])\\Cl)/C=C(\\C(=O)[O-])/O";
+		String expectedSmiles;
+		try
+		{
+			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
+					.parseSmiles("[O-]C(=O)C(=O)C\\C=C\\Cl");
+			expectedSmiles = SmilesGenerator.absolute().create(mol);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+		List<String> s = applySmirks(smirks, smi);
+		Assert.assertEquals(expectedSmiles, s.get(0));
 	}
 
 	@Test
@@ -109,6 +138,20 @@ public class TestAmbit
 	}
 
 	// ---------- tests below have been fixed -------------------------
+
+	//apparently (!) fixed by nick
+	@Test
+	public void stereoChemIsLost2_rule1196_u45008()
+	{
+		String smirks = "[H][#6:1](-[#6:5])=[O:4]>>[#6:5]-[#6:1](-[#8-])=[O:4]";
+		String smi = "C(=O)[C@@H]1C(=O)C(C(=O)O1)(F)F";
+		List<String> s = applySmirks(smirks, smi);
+		Assert.assertTrue("Results should still contain stereocheminfo: " + s.get(0), s.get(0).contains("@"));
+		//		String smi2 = "C(=O)[C@@]([H])1C(=O)C(C(=O)O1)(F)F";
+		//		List<String> s2 = applySmirks(smirks, smi2);
+		//		Assert.assertTrue("Results should still contain stereocheminfo: " + s.get(0) + " " + s2.get(0), s.get(0)
+		//				.contains("@") && s2.get(0).contains("@"));
+	}
 
 	// fixed by nick
 	@Test
@@ -244,6 +287,6 @@ public class TestAmbit
 	{
 		TestAmbit t = new TestAmbit();
 		//		t.missingProducts_rule2793_u26103();
-		t.stereoChemIsLost2_rule1196_u45008();
+		t.stereoChemLost3_rule3138_u138720();
 	}
 }
