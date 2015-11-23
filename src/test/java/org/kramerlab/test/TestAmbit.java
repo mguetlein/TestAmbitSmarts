@@ -28,6 +28,7 @@ import ambit2.smarts.SmartsConst;
 @RunWith(JUnit4.class)
 public class TestAmbit
 {
+	@Test
 	public void stereoChemNotInserted_rule4230_u145861()
 	{
 		String smirks = "[#8-:11]-[#6:9](=[O:10])-[#6:1]([H])([H])-[c:2]1[c:3]([H])[c:4]([H])[c:5]([H])[c:6]([H])[c:7]([H])1>>[#8-:11]-[#6:9](=[O:10])\\[#6:1]([H])=[#6:2]-1\\[#6:7]([H])([H])-[#6:6]([H])=[#6:5]([H])-[#6:4]([H])=[#6:3]([H])-[#8]-1";
@@ -47,6 +48,7 @@ public class TestAmbit
 		Assert.assertEquals(expectedSmiles, s.get(0));
 	}
 
+	@Test
 	public void stereoChemLost3_rule3138_u138720()
 	{
 		String smirks = "[#8:1]([H])-[#6:2](-[#6:9](-[#8-:10])=[O:11])=[#6:3](-[#1,#6,#17:12])-[#6:4]=[#6:5]-[#6](-[#8-])=O>>[#8-:10]-[#6:9](=[O:11])-[#6:2](=[O:1])-[#6:3](-[#1,#6,#17:12])-[#6:4]=[#6:5]";
@@ -65,6 +67,13 @@ public class TestAmbit
 		List<String> s = applySmirks(smirks, smi);
 		Assert.assertEquals(expectedSmiles, s.get(0));
 	}
+
+	//	public void productToSmilesError_rule3707_u143203()
+	//	{
+	//		String smirks = "[H:10][#8:9]-[c:4]1[c;R1:5][c;R1:6][c:1]([H])[c;R1:7][c;R1:8]1>>[H:10][#8:9]-[c:4]1[c;R1:5][c;R1:6][c:1](-[#8])[c;R1:7][c;R1:8]1";
+	//		String smi = "C1=CC=C(C=C1)/C(=C\\2\\C=C(\\C(=C(\\C3=CC(=C(C=C3)O)O)/C(=O)[O-])\\C=C2O)O)/C(=O)[O-]";
+	//		Assert.assertNotNull("Reaction should not fail", applySmirks(smirks, smi));
+	//	}
 
 	@Test
 	public void ringSplitArom_rule4224_ar13()
@@ -101,14 +110,6 @@ public class TestAmbit
 	}
 
 	@Test
-	public void ringSplitHeteroAtom_rule4294_u78282()
-	{
-		String smirks = "[O:8]=[c:2]1[c:3][c:4][c:5][c:6][o:1]1>>[#8:1]([H])\\[#6:6]=[#6:5]/[#6:4]=[#6:3]\\[#6:2](-[#8-])=[O:8]";
-		String smi = "C1=CC=C2C(=C1)C=CC(=O)O2";
-		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
-	}
-
-	@Test
 	public void missingProducts_rule2793_u26103()
 	{
 		String smirks = "[#8:8]([H])-[c:2]1[c:1](-[#8:7]([H]))[c;R]([c;R:5](-[!#8,#1:11])[c;R:4](-[!#8,#1:10])[c;R:3]1-[!#8,#1:9])S([#8])(=O)=O>>[!#8,#1:11]\\\\\\[#6:5]=[#6:4](///[!#8,#1:10])-[#6:3](-[!#8,#1:9])-[#6:2](=[O:8])-[#6:1](-[#8-])=[O:7]";
@@ -117,10 +118,14 @@ public class TestAmbit
 		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
 	}
 
+	// ---------- tests below have been fixed -------------------------
+
+	// fixed by rewriting smirks
 	@Test
 	public void makeRingAromatic_rule3667_u9685()
 	{
-		String smirks = "[#8:7]([H])-[#6:1]([H])-1-[#6:2]=[#6:3]-[#6:4]=[#6:5]-[#6:6]([H])-1-[#8:8]([H])>>[#8:7]([H])-[c:1]1[c:2][c:3][c:4][c:5][c:6]1-[#8:8]([H])";
+		//String smirks = "[#8:7]([H])-[#6:1]([H])-1-[#6:2]=[#6:3]-[#6:4]=[#6:5]-[#6:6]([H])-1-[#8:8]([H])>>[#8:7]([H])-[c:1]1[c:2][c:3][c:4][c:5][c:6]1-[#8:8]([H])";
+		String smirks = "[#8:7]([H])-[#6:1]([H])-1-[#6:2]=[#6:3]-[#6:4]=[#6:5]-[#6:6]([H])-1-[#8:8]([H])>>[#8:7]([H])-[#6:1]=1-[#6:2]=[#6:3]-[#6:4]=[#6:5]-[#6:6]=1-[#8:8]([H])";
 		String smi = "C1=C[C@@H]([C@@H](C(=C1)C2=CC=C(C=C2)Cl)O)O";
 		String expectedSmiles;
 		try
@@ -137,7 +142,14 @@ public class TestAmbit
 		Assert.assertEquals("Result be aromatic", expectedSmiles, s.get(0));
 	}
 
-	// ---------- tests below have been fixed -------------------------
+	// fixed by using daylight hetero model
+	@Test
+	public void ringSplitHeteroAtom_rule4294_u78282()
+	{
+		String smirks = "[O:8]=[c:2]1[c:3][c:4][c:5][c:6][o:1]1>>[#8:1]([H])\\[#6:6]=[#6:5]/[#6:4]=[#6:3]\\[#6:2](-[#8-])=[O:8]";
+		String smi = "C1=CC=C2C(=C1)C=CC(=O)O2";
+		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
+	}
 
 	//apparently (!) fixed by nick
 	@Test
@@ -286,7 +298,7 @@ public class TestAmbit
 	public static void main(String[] args) throws CDKException
 	{
 		TestAmbit t = new TestAmbit();
-		//		t.missingProducts_rule2793_u26103();
-		t.stereoChemLost3_rule3138_u138720();
+		t.makeRingAromatic_rule3667_u9685();
+		//		t.productToSmilesError_rule3707_u143203();
 	}
 }
