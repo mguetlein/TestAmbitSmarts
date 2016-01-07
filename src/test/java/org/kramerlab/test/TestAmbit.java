@@ -49,6 +49,26 @@ public class TestAmbit
 	}
 
 	@Test
+	public void stereoChemNotInserted_rule2844_u114856()
+	{
+		String smirks = "[H][C:2]([#6:5]([H])([H])([H]))([#1,#6:4])!@-[#6:1]([H])([H])-[#6:3](-[#8-:8])=[O:6]>>[#6:5]([H])([H])([H])\\[#6:2](-[#1,#6:4])!@=[#6:1]\\[#6:3](-[#8-:8])=[O:6]";
+		String smi = "CCC(C)CC(=O)[O-]";
+		String expectedSmiles;
+		try
+		{
+			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
+					.parseSmiles("CC\\C(C)=C/C([O-])=O");
+			expectedSmiles = SmilesGenerator.absolute().create(mol);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+		List<String> s = applySmirks(smirks, smi);
+		Assert.assertEquals(expectedSmiles, s.get(0));
+	}
+
+	@Test
 	public void stereoChemLost3_rule3138_u138720()
 	{
 		String smirks = "[#8:1]([H])-[#6:2](-[#6:9](-[#8-:10])=[O:11])=[#6:3](-[#1,#6,#17:12])-[#6:4]=[#6:5]-[#6](-[#8-])=O>>[#8-:10]-[#6:9](=[O:11])-[#6:2](=[O:1])-[#6:3](-[#1,#6,#17:12])-[#6:4]=[#6:5]";
@@ -68,15 +88,8 @@ public class TestAmbit
 		Assert.assertEquals(expectedSmiles, s.get(0));
 	}
 
-	//	public void productToSmilesError_rule3707_u143203()
-	//	{
-	//		String smirks = "[H:10][#8:9]-[c:4]1[c;R1:5][c;R1:6][c:1]([H])[c;R1:7][c;R1:8]1>>[H:10][#8:9]-[c:4]1[c;R1:5][c;R1:6][c:1](-[#8])[c;R1:7][c;R1:8]1";
-	//		String smi = "C1=CC=C(C=C1)/C(=C\\2\\C=C(\\C(=C(\\C3=CC(=C(C=C3)O)O)/C(=O)[O-])\\C=C2O)O)/C(=O)[O-]";
-	//		Assert.assertNotNull("Reaction should not fail", applySmirks(smirks, smi));
-	//	}
-
 	@Test
-	public void ringSplitArom_rule4224_ar13()
+	public void ringSplit1_arom_rule4224_ar13()
 	{
 		String smirks = "[#8;H1:2]-[#6:10]1:[#6:5](-[#8;H1:1]):[#6:6](-[*,#1:11]):[#6:7]:[#6:8]:[#6,#7:9]:1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
 		String smi = "O-C(=C-C=C-C=O)C([O-])=O";
@@ -84,7 +97,7 @@ public class TestAmbit
 	}
 
 	@Test
-	public void ringSplitKekulized_rule4224_ar13()
+	public void ringSplit1_kekulized_rule4224_ar13()
 	{
 		String smirks = "[#8;H1:2]-[#6:10]1=[#6:5](-[#8;H1:1])-[#6:6](-[*,#1:11])=[#6:7]-[#6:8]=[#6,#7:9]-1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
 		String smi = "O-C(=C-C=C-C=O)C([O-])=O";
@@ -92,11 +105,20 @@ public class TestAmbit
 	}
 
 	@Test
-	public void anotherRingSplit_rule4287()
+	public void ringSplit2_rule4287()
 	{
 		String smirks = "[#8-:10]-[#6:9](=[O:11])-[#6:1]-1=[CH1]-[#6;H1:5]=[#6;H1:4]-[#6;H1:3]=[#6;H1:2]-1>>O-[#6:5](=O)-[#6;H2:4]\\[#6;H1:3]=[#6;H1:2]/[#6;H2:1]-[#6:9](-[#8-:10])=[O:11]";
 		String smi = "O=C([O-])C1=CC=CC=C1";
 		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
+	}
+
+	public void ringSplit3_rule3743_u50144_u137948()
+	{
+		String smirks = "[#6:3]-[#8:15]-[c;R:11]1[c:12](-[#8:2]([H]))[c:7](-[#8:1]([H]))[c;R:8]([#1,#6,#9,#17,#35,#53;A:4])[c;R:9](-[!#16:6])[c;R:10]1-[!#8!#16:5]>>[!#16:6]\\[#6:9](=[#6:10](/[!#8!#16:5])-[#6:11](-[#8:15])=O)-[#6:8]([#1,#6,#9,#17,#35,#53;A:4])-[#6:7](=[O:1])-[#6:12](-[#8-:2])=O.[#6:3]-[#8]";
+		String smi1 = "COC1=C2C=CC=CC2=CC(=C1O)O";
+		String smi2 = "C1=CC2=CC(=C(C3=C2C(=C1)CC(=O)O3)O)O";
+		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi1).isEmpty()
+				|| applySmirks(smirks, smi2).isEmpty());
 	}
 
 	@Test
@@ -117,6 +139,13 @@ public class TestAmbit
 		// working smiles example: C1=CC(=C(C(=C1N)S(=O)(=O)[O-])O)O
 		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
 	}
+
+	//	public void productToSmilesError_rule3707_u143203()
+	//	{
+	//		String smirks = "[H:10][#8:9]-[c:4]1[c;R1:5][c;R1:6][c:1]([H])[c;R1:7][c;R1:8]1>>[H:10][#8:9]-[c:4]1[c;R1:5][c;R1:6][c:1](-[#8])[c;R1:7][c;R1:8]1";
+	//		String smi = "C1=CC=C(C=C1)/C(=C\\2\\C=C(\\C(=C(\\C3=CC(=C(C=C3)O)O)/C(=O)[O-])\\C=C2O)O)/C(=O)[O-]";
+	//		Assert.assertNotNull("Reaction should not fail", applySmirks(smirks, smi));
+	//	}	
 
 	// ---------- tests below have been fixed -------------------------
 
@@ -158,7 +187,8 @@ public class TestAmbit
 		String smirks = "[H][#6:1](-[#6:5])=[O:4]>>[#6:5]-[#6:1](-[#8-])=[O:4]";
 		String smi = "C(=O)[C@@H]1C(=O)C(C(=O)O1)(F)F";
 		List<String> s = applySmirks(smirks, smi);
-		Assert.assertTrue("Results should still contain stereocheminfo: " + s.get(0), s.get(0).contains("@"));
+		Assert.assertTrue("Results should still contain stereocheminfo: " + s.get(0), s.get(0)
+				.contains("@"));
 		//		String smi2 = "C(=O)[C@@]([H])1C(=O)C(C(=O)O1)(F)F";
 		//		List<String> s2 = applySmirks(smirks, smi2);
 		//		Assert.assertTrue("Results should still contain stereocheminfo: " + s.get(0) + " " + s2.get(0), s.get(0)
@@ -200,7 +230,8 @@ public class TestAmbit
 		String smirks = "[H:6][C:1]([#6:4])([#16;H1v2])[#1,#6:5]>>[H:6][C:1]([H])([#6:4])[#1,#6:5]";
 		String smi = "CN\\C(NCCS)=C\\[N+]([O-])=O";
 		List<String> s = applySmirks(smirks, smi);
-		Assert.assertTrue("Results should still contain stereocheminfo: " + s.get(0), s.get(0).contains("\\"));
+		Assert.assertTrue("Results should still contain stereocheminfo: " + s.get(0), s.get(0)
+				.contains("\\"));
 	}
 
 	// fixed by changing the smirks
@@ -232,7 +263,8 @@ public class TestAmbit
 		String smirks = "[#8:7]([H])-[c:2]1[c:6]([H])[c:5]([H])[c:4](-[#8:8]([H]))[n:1][c:3]([H])1>>[#8-:7]-[#6:2](=O)[#6:6]=[#6:5]/[#6:4](=[O:8])-[#7:1]-[#6:3]=O";
 		String smi = "C1=CC(=NC=C1O)O";
 		List<String> s = applySmirks(smirks, smi);
-		Assert.assertTrue("Results should not contain C(=C=C: " + s.get(0), s.get(0).contains("C(=C=C"));
+		Assert.assertFalse("Results should not contain C(=C=C: " + s.get(0),
+				s.get(0).contains("C(=C=C"));
 	}
 
 	public static List<String> applySmirks(String smrk, String smi)
@@ -254,7 +286,8 @@ public class TestAmbit
 			if (!smrkMan.getErrors().equals(""))
 				throw new RuntimeException("Invalid SMIRKS: " + smrkMan.getErrors());
 
-			IAtomContainer target = new SmilesParser(SilentChemObjectBuilder.getInstance()).parseSmiles(smi);
+			IAtomContainer target = new SmilesParser(SilentChemObjectBuilder.getInstance())
+					.parseSmiles(smi);
 			for (IAtom atom : target.atoms())
 				if (atom.getFlag(CDKConstants.ISAROMATIC))
 					atom.setFlag(CDKConstants.ISAROMATIC, false);
@@ -269,12 +302,12 @@ public class TestAmbit
 
 			// for our project, we want to use daylight aromaticity
 			// CDKHueckelAromaticityDetector.detectAromaticity(target);
-			Aromaticity aromaticity = new Aromaticity(ElectronDonation.daylight(), Cycles.or(Cycles.all(),
-					Cycles.edgeShort()));
+			Aromaticity aromaticity = new Aromaticity(ElectronDonation.daylight(), Cycles.or(
+					Cycles.all(), Cycles.edgeShort()));
 			aromaticity.apply(target);
 
-			IAtomContainerSet resSet2 = smrkMan.applyTransformationWithSingleCopyForEachPos(target, null, reaction,
-					SmartsConst.SSM_MODE.SSM_ALL);
+			IAtomContainerSet resSet2 = smrkMan.applyTransformationWithSingleCopyForEachPos(target,
+					null, reaction, SmartsConst.SSM_MODE.SSM_ALL);
 			List<String> result = new ArrayList<String>();
 			if (resSet2 != null)
 				for (int i = 0; i < resSet2.getAtomContainerCount(); i++)
@@ -298,7 +331,8 @@ public class TestAmbit
 	public static void main(String[] args) throws CDKException
 	{
 		TestAmbit t = new TestAmbit();
-		t.makeRingAromatic_rule3667_u9685();
+		//t.ringSplitArom_rule4224_ar13();
+		t.ringSplit3_rule3743_u50144_u137948();
 		//		t.productToSmilesError_rule3707_u143203();
 	}
 }
