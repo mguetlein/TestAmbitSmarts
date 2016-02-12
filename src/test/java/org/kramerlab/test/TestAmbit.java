@@ -29,7 +29,7 @@ import ambit2.smarts.SmartsConst;
 public class TestAmbit
 {
 	@Test
-	public void stereoChemNotInserted_rule4230_u145861()
+	public void stereoChemNotInserted1_rule4230_u145861()
 	{
 		String smirks = "[#8-:11]-[#6:9](=[O:10])-[#6:1]([H])([H])-[c:2]1[c:3]([H])[c:4]([H])[c:5]([H])[c:6]([H])[c:7]([H])1>>[#8-:11]-[#6:9](=[O:10])\\[#6:1]([H])=[#6:2]-1\\[#6:7]([H])([H])-[#6:6]([H])=[#6:5]([H])-[#6:4]([H])=[#6:3]([H])-[#8]-1";
 		String smi = "C1=CC=C(C=C1)CC(=O)[O-]";
@@ -49,7 +49,7 @@ public class TestAmbit
 	}
 
 	@Test
-	public void stereoChemNotInserted_rule2844_u114856()
+	public void stereoChemNotInserted2_rule2844_u114856()
 	{
 		String smirks = "[H][C:2]([#6:5]([H])([H])([H]))([#1,#6:4])!@-[#6:1]([H])([H])-[#6:3](-[#8-:8])=[O:6]>>[#6:5]([H])([H])([H])\\[#6:2](-[#1,#6:4])!@=[#6:1]\\[#6:3](-[#8-:8])=[O:6]";
 		String smi = "CCC(C)CC(=O)[O-]";
@@ -69,7 +69,7 @@ public class TestAmbit
 	}
 
 	@Test
-	public void stereoChemLost3_rule3138_u138720()
+	public void stereoChemLost_rule3138_u138720()
 	{
 		String smirks = "[#8:1]([H])-[#6:2](-[#6:9](-[#8-:10])=[O:11])=[#6:3](-[#1,#6,#17:12])-[#6:4]=[#6:5]-[#6](-[#8-])=O>>[#8-:10]-[#6:9](=[O:11])-[#6:2](=[O:1])-[#6:3](-[#1,#6,#17:12])-[#6:4]=[#6:5]";
 		String smi = "C(=C(/C(=O)[O-])\\Cl)/C=C(\\C(=O)[O-])/O";
