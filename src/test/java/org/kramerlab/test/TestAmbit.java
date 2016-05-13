@@ -162,6 +162,7 @@ public class TestAmbit
 			smrkMan.setFlagConvertAddedImplicitHToExplicitOnResultProcess(false);
 			smrkMan.setFlagConvertExplicitHToImplicitOnResultProcess(true);
 			smrkMan.getSmartsParser().mSupportDoubleBondAromaticityNotSpecified = false;
+			smrkMan.setFlagApplyStereoTransformation(true);
 
 			SMIRKSReaction reaction = smrkMan.parse(smrk);
 			if (!smrkMan.getErrors().equals(""))
@@ -213,7 +214,7 @@ public class TestAmbit
 	{
 		TestAmbit t = new TestAmbit();
 		//t.ringSplitArom_rule4224_ar13();
-		t.ringSplit3_rule3743_u50144_u137948();
+		//t.ringSplit3_rule3743_u50144_u137948();
 		//		t.productToSmilesError_rule3707_u143203();
 	}
 }

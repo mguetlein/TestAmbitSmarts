@@ -50,7 +50,7 @@
   
   <properties>
      <cdk.version>1.5.12-SNAPSHOT</cdk.version>
-    <ambit.version>3.0.0-SNAPSHOT</ambit.version>
+    <ambit.version>3.0.3-SNAPSHOT</ambit.version>
   </properties>
   
   
