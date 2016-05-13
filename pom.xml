@@ -49,7 +49,7 @@
   </build>
   
   <properties>
-     <cdk.version>1.5.12-SNAPSHOT</cdk.version>
+     <cdk.version>1.5.13</cdk.version>
     <ambit.version>3.0.3-SNAPSHOT</ambit.version>
   </properties>
   
