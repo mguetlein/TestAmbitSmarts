@@ -176,9 +176,7 @@ public class TestAmbit
 	public static void main(String[] args) throws CDKException
 	{
 		TestAmbit t = new TestAmbit();
-		//t.stereoChemNotInserted1_rule4230_u145861();
-		t.stereoChemNotInserted2_rule2844_u114856();
-		//t.ringSplit3_rule3743_u50144_u137948();
+		t.ringSplit3_rule3743_u50144_u137948();
 		//		t.productToSmilesError_rule3707_u143203();
 	}
 }
