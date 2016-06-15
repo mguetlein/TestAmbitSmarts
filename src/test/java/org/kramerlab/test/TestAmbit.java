@@ -21,6 +21,7 @@ import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
+import ambit2.core.data.MoleculeTools;
 import ambit2.smarts.SMIRKSManager;
 import ambit2.smarts.SMIRKSReaction;
 import ambit2.smarts.SmartsConst;
@@ -28,46 +29,6 @@ import ambit2.smarts.SmartsConst;
 @RunWith(JUnit4.class)
 public class TestAmbit
 {
-	@Test
-	public void stereoChemNotInserted1_rule4230_u145861()
-	{
-		String smirks = "[#8-:11]-[#6:9](=[O:10])-[#6:1]([H])([H])-[c:2]1[c:3]([H])[c:4]([H])[c:5]([H])[c:6]([H])[c:7]([H])1>>[#8-:11]-[#6:9](=[O:10])\\[#6:1]([H])=[#6:2]-1\\[#6:7]([H])([H])-[#6:6]([H])=[#6:5]([H])-[#6:4]([H])=[#6:3]([H])-[#8]-1";
-		String smi = "C1=CC=C(C=C1)CC(=O)[O-]";
-		String expectedSmiles;
-		try
-		{
-			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
-					.parseSmiles("[O-]C(=O)\\C=C1\\CC=CC=CO1");
-			expectedSmiles = SmilesGenerator.absolute().create(mol);
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e);
-		}
-		List<String> s = applySmirks(smirks, smi);
-		Assert.assertEquals(expectedSmiles, s.get(0));
-	}
-
-	@Test
-	public void stereoChemNotInserted2_rule2844_u114856()
-	{
-		String smirks = "[H][C:2]([#6:5]([H])([H])([H]))([#1,#6:4])!@-[#6:1]([H])([H])-[#6:3](-[#8-:8])=[O:6]>>[#6:5]([H])([H])([H])\\[#6:2](-[#1,#6:4])!@=[#6:1]\\[#6:3](-[#8-:8])=[O:6]";
-		String smi = "CCC(C)CC(=O)[O-]";
-		String expectedSmiles;
-		try
-		{
-			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
-					.parseSmiles("CC\\C(C)=C/C([O-])=O");
-			expectedSmiles = SmilesGenerator.absolute().create(mol);
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e);
-		}
-		List<String> s = applySmirks(smirks, smi);
-		Assert.assertEquals(expectedSmiles, s.get(0));
-	}
-
 	@Test
 	public void stereoChemLost_rule3138_u138720()
 	{
@@ -180,7 +141,9 @@ public class TestAmbit
 			//			AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(target);
 			//			CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance(SilentChemObjectBuilder.getInstance());
 			//			adder.addImplicitHydrogens(target);
-			AtomContainerManipulator.convertImplicitToExplicitHydrogens(target);
+			//CDK bug regarding stereo in 1.5.13
+			//AtomContainerManipulator.convertImplicitToExplicitHydrogens(target);
+			MoleculeTools.convertImplicitToExplicitHydrogens(target);
 
 			// for our project, we want to use daylight aromaticity
 			// CDKHueckelAromaticityDetector.detectAromaticity(target);
@@ -213,7 +176,8 @@ public class TestAmbit
 	public static void main(String[] args) throws CDKException
 	{
 		TestAmbit t = new TestAmbit();
-		//t.ringSplitArom_rule4224_ar13();
+		//t.stereoChemNotInserted1_rule4230_u145861();
+		t.stereoChemNotInserted2_rule2844_u114856();
 		//t.ringSplit3_rule3743_u50144_u137948();
 		//		t.productToSmilesError_rule3707_u143203();
 	}

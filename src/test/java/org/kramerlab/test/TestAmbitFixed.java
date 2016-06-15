@@ -14,6 +14,47 @@ import org.openscience.cdk.smiles.SmilesParser;
 @RunWith(JUnit4.class)
 public class TestAmbitFixed
 {
+	// fixed with stereo bug fix 14.06.2016
+	@Test
+	public void stereoChemNotInserted1_rule4230_u145861()
+	{
+		String smirks = "[#8-:11]-[#6:9](=[O:10])-[#6:1]([H])([H])-[c:2]1[c:3]([H])[c:4]([H])[c:5]([H])[c:6]([H])[c:7]([H])1>>[#8-:11]-[#6:9](=[O:10])\\[#6:1]([H])=[#6:2]-1\\[#6:7]([H])([H])-[#6:6]([H])=[#6:5]([H])-[#6:4]([H])=[#6:3]([H])-[#8]-1";
+		String smi = "C1=CC=C(C=C1)CC(=O)[O-]";
+		String expectedSmiles;
+		try
+		{
+			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
+					.parseSmiles("[O-]C(=O)\\C=C1\\CC=CC=CO1");
+			expectedSmiles = SmilesGenerator.absolute().create(mol);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+		List<String> s = applySmirks(smirks, smi);
+		Assert.assertEquals(expectedSmiles, s.get(0));
+	}
+
+	@Test
+	public void stereoChemNotInserted2_rule2844_u114856()
+	{
+		String smirks = "[H][C:2]([#6:5]([H])([H])([H]))([#1,#6:4])!@-[#6:1]([H])([H])-[#6:3](-[#8-:8])=[O:6]>>[#6:5]([H])([H])([H])\\[#6:2](-[#1,#6:4])!@=[#6:1]\\[#6:3](-[#8-:8])=[O:6]";
+		String smi = "CCC(C)CC(=O)[O-]";
+		String expectedSmiles;
+		try
+		{
+			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
+					.parseSmiles("CC\\C(C)=C/C([O-])=O");
+			expectedSmiles = SmilesGenerator.absolute().create(mol);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+		List<String> s = applySmirks(smirks, smi);
+		Assert.assertEquals(expectedSmiles, s.get(0));
+	}
+
 	// fixed by rewriting smirks
 	@Test
 	public void makeRingAromatic_rule3667_u9685()
