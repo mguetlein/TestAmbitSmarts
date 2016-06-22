@@ -86,6 +86,27 @@ public class TestAmbitFixed
 		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
 	}
 
+        // fixed as of 2016-06-22
+        @Test
+        public void stereoChemLost_rule3138_u138720()
+        {
+                String smirks = "[#8:1]([H])-[#6:2](-[#6:9](-[#8-:10])=[O:11])=[#6:3](-[#1,#6,#17:12])-[#6:4]=[#6:5]-[#6](-[#8-])=O>>[#8-:10]-[#6:9](=[O:11])-[#6:2](=[O:1])-[#6:3](-[#1,#6,#17:12])-[#6:4]=[#6:5]";
+                String smi = "C(=C(/C(=O)[O-])\\Cl)/C=C(\\C(=O)[O-])/O";
+                String expectedSmiles;
+                try
+                {
+                        IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
+                                        .parseSmiles("[O-]C(=O)C(=O)C\\C=C\\Cl");
+                        expectedSmiles = SmilesGenerator.absolute().create(mol);
+                }
+                catch (Exception e)
+                {
+                        throw new RuntimeException(e);
+                }
+                List<String> s = applySmirks(smirks, smi);
+                Assert.assertEquals(expectedSmiles, s.get(0));
+        }
+
 	//apparently (!) fixed by nick
 	@Test
 	public void stereoChemIsLost2_rule1196_u45008()
