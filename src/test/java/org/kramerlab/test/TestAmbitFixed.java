@@ -203,6 +203,17 @@ public class TestAmbitFixed
 		Assert.assertNotNull("Reaction should not fail", applySmirks(smirks, smi));
 	}
 	
+	// fixed by replacing three single bonds with default (single or aromatic) bonds
+	@Test
+	public void missingProducts_rule2793_u26103()
+	{
+	// original smirks: "[#8:8]([H])-[c:2]1[c:1](-[#8:7]([H]))[c;R]([c;R:5](-[!#8,#1:11])[c;R:4](-[!#8,#1:10])[c;R:3]1-[!#8,#1:9])S([#8])(=O)=O>>[!#8,#1:11]\\\\\\[#6:5]=[#6:4](///[!#8,#1:10])-[#6:3](-[!#8,#1:9])-[#6:2](=[O:8])-[#6:1](-[#8-])=[O:7]";
+		String smirks = "[#8:8]([H])-[c:2]1[c:1](-[#8:7]([H]))[c;R]([c;R:5]([!#8,#1:11])[c;R:4]([!#8,#1:10])[c;R:3]1[!#8,#1:9])S([#8])(=O)=O>>[!#8,#1:11]\\[#6:5]=[#6:4](/[!#8,#1:10])-[#6:3](-[!#8,#1:9])-[#6:2](=[O:8])-[#6:1](-[#8-])=[O:7]";
+		String smi = "C1=C(C=CC(=C1)C2=NC3=C(C(=C(C=C3N2)S(=O)(=O)[O-])O)O)C4=NC5=C(C=C(C=C5S(=O)(=O)[O-])S(=O)(=O)[O-])N4";
+		// working smiles example: C1=CC(=C(C(=C1N)S(=O)(=O)[O-])O)O
+		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
+	}
+
 	public static List<String> applySmirks(String smrk, String smi)
 	{
 		return TestAmbit.applySmirks(smrk, smi);

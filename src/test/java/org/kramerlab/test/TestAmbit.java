@@ -64,15 +64,6 @@ public class TestAmbit
 	}
 
 	@Test
-	public void missingProducts_rule2793_u26103()
-	{
-		String smirks = "[#8:8]([H])-[c:2]1[c:1](-[#8:7]([H]))[c;R]([c;R:5](-[!#8,#1:11])[c;R:4](-[!#8,#1:10])[c;R:3]1-[!#8,#1:9])S([#8])(=O)=O>>[!#8,#1:11]\\\\\\[#6:5]=[#6:4](///[!#8,#1:10])-[#6:3](-[!#8,#1:9])-[#6:2](=[O:8])-[#6:1](-[#8-])=[O:7]";
-		String smi = "C1=C(C=CC(=C1)C2=NC3=C(C(=C(C=C3N2)S(=O)(=O)[O-])O)O)C4=NC5=C(C=C(C=C5S(=O)(=O)[O-])S(=O)(=O)[O-])N4";
-		// working smiles example: C1=CC(=C(C(=C1N)S(=O)(=O)[O-])O)O
-		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
-	}
-
-	@Test
 	public void aromaticRingWithOxygen_rule4150_u56188()
 	{
 		String smirks = "[#6:4]@-[#6;!$(C1(=O)C=CC(=O)C=C1)!$(C(=O)CC=O):1](@-[#6:2])=[O:5]>>[#6:2]@-[#8]@-[#6:1](@-[#6:4])=[O:5]";
