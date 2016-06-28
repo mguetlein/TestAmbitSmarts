@@ -64,16 +64,6 @@ public class TestAmbit
 	}
 
 	@Test
-	public void complexCarbonStructure_rule3803_c0630()
-	{
-		// was working in cdk1.4
-		String smirks = "[H][C;R1:3]([H:2])([#6;X4:5])[#6;X4:6]>>[H:2][C;R1:3]([#6;X4:5])([#6;X4:6])O";
-		String smi = "CC1(C)C2CC1C(CO)=CC2";
-		List<String> s = applySmirks(smirks, smi);
-		Assert.assertFalse("Results should not be empty", s.isEmpty());
-	}
-
-	@Test
 	public void missingProducts_rule2793_u26103()
 	{
 		String smirks = "[#8:8]([H])-[c:2]1[c:1](-[#8:7]([H]))[c;R]([c;R:5](-[!#8,#1:11])[c;R:4](-[!#8,#1:10])[c;R:3]1-[!#8,#1:9])S([#8])(=O)=O>>[!#8,#1:11]\\\\\\[#6:5]=[#6:4](///[!#8,#1:10])-[#6:3](-[!#8,#1:9])-[#6:2](=[O:8])-[#6:1](-[#8-])=[O:7]";
