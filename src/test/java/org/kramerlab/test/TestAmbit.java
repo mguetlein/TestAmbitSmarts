@@ -33,7 +33,7 @@ public class TestAmbit
 	public void ringSplit1_arom_rule4224_ar13()
 	{
 		String smirks = "[#8;H1:2]-[#6:10]1:[#6:5](-[#8;H1:1]):[#6:6](-[*,#1:11]):[#6:7]:[#6:8]:[#6,#7:9]:1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
-		String smi = "O-C(=C-C=C-C=O)C([O-])=O";
+		String smi = "Oc1cccc(Cl)c1O";
 		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
 	}
 
@@ -41,7 +41,7 @@ public class TestAmbit
 	public void ringSplit1_kekulized_rule4224_ar13()
 	{
 		String smirks = "[#8;H1:2]-[#6:10]1=[#6:5](-[#8;H1:1])-[#6:6](-[*,#1:11])=[#6:7]-[#6:8]=[#6,#7:9]-1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
-		String smi = "O-C(=C-C=C-C=O)C([O-])=O";
+		String smi = "OC1=CC=CC(Cl)=C1O";
 		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
 	}
 
