@@ -72,13 +72,6 @@ public class TestAmbit
 		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
 	}
 
-	//	public void productToSmilesError_rule3707_u143203()
-	//	{
-	//		String smirks = "[H:10][#8:9]-[c:4]1[c;R1:5][c;R1:6][c:1]([H])[c;R1:7][c;R1:8]1>>[H:10][#8:9]-[c:4]1[c;R1:5][c;R1:6][c:1](-[#8])[c;R1:7][c;R1:8]1";
-	//		String smi = "C1=CC=C(C=C1)/C(=C\\2\\C=C(\\C(=C(\\C3=CC(=C(C=C3)O)O)/C(=O)[O-])\\C=C2O)O)/C(=O)[O-]";
-	//		Assert.assertNotNull("Reaction should not fail", applySmirks(smirks, smi));
-	//	}	
-
 	@Test
 	public void aromaticRingWithOxygen_rule4150_u56188()
 	{
