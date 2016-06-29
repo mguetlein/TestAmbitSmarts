@@ -29,18 +29,20 @@ import ambit2.smarts.SmartsConst;
 @RunWith(JUnit4.class)
 public class TestAmbit
 {
+	// fixed with ambit2-smarts-3.0.3-20160628.065959-20.jar
 	@Test
-	public void ringSplit1_arom_rule4224_ar13()
+	public void ringSplit1_alt_rule4224_arom_ar13()
 	{
 		String smirks = "[#8;H1:2]-[#6:10]1:[#6:5](-[#8;H1:1]):[#6:6](-[*,#1:11]):[#6:7]:[#6:8]:[#6,#7:9]:1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
 		String smi = "Oc1cccc(Cl)c1O";
 		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
 	}
 
+	// ambit2-smarts-3.0.3-20160628.065959-20.jar and using the aromatic smirks form while keeping the smiles kekulized
 	@Test
-	public void ringSplit1_kekulized_rule4224_ar13()
+	public void ringSplit1_alt_rule4224_kekulized_ar13()
 	{
-		String smirks = "[#8;H1:2]-[#6:10]1=[#6:5](-[#8;H1:1])-[#6:6](-[*,#1:11])=[#6:7]-[#6:8]=[#6,#7:9]-1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
+		String smirks = "[#8;H1:2]-[#6:10]1:[#6:5](-[#8;H1:1]):[#6:6](-[*,#1:11]):[#6:7]:[#6:8]:[#6,#7:9]:1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
 		String smi = "OC1=CC=CC(Cl)=C1O";
 		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
 	}
