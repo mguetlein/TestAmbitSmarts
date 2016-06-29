@@ -214,35 +214,6 @@ public class TestAmbitFixed
 		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
 	}
 
-	/*
-	 * the problem is in the diverging notion of '@-'
-	 * this is interpreted by Ambit as a bond in a ring, single or aromatic
-	 * Chemaxon sees it as a bond in a ring, strictly single
-	 * (cf. the notation for bonds without the '@' sign as in 2793:
-	 * for Ambit '-' is strictly single, for Chemaxon it might also be aromatic)
-	 */
-	@Test
-	public void aromaticRingWithOxygen_rule4150_u56188()
-	{
-		String smirks = "[#6:4]@-!:[#6;!$(C1(=O)C=CC(=O)C=C1)!$(C(=O)CC=O):1](@-!:[#6:2])=[O:5]>>[#6:2]@-[#8]@-[#6:1](@-[#6:4])=[O:5]";
-		// simple true target
-		String smi = "O=C1CCOC=C1";
-		List<String> s = applySmirks(smirks, smi);
-		Assert.assertFalse("Results should not be empty", s.isEmpty());
-		// simple false target
-		smi = "O=c1ccocc1";
-		s = applySmirks(smirks, smi);
-		Assert.assertTrue("Results should be empty", s.isEmpty());
-		// kekulized
-		smi = "O=C1C=COC=C1";
-		s = applySmirks(smirks, smi);
-		Assert.assertTrue("Results should be empty", s.isEmpty());
-		// u56188 reduced to one target group only
-		smi = "COc1cc(O)c2c(c1)oc(cc2=O)-c1ccc(O)cc1";
-		s = applySmirks(smirks, smi);
-		Assert.assertTrue("Results should be empty", s.isEmpty());
-	}
-
 	// fixed with ambit2-smarts-3.0.3-20160628.065959-20.jar
 	@Test
 	public void ringSplit1_alt_rule4224_arom_ar13()
