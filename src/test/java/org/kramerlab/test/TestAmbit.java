@@ -62,7 +62,11 @@ public class TestAmbit
 		String smi = "O=C1CCOC=C1";
 		List<String> s = applySmirks(smirks, smi);
 		Assert.assertFalse("Results should not be empty", s.isEmpty());
-		// simple false target
+		// simple false target: no ring
+		smi = "O=C(C)C";
+		s = applySmirks(smirks, smi);
+		Assert.assertTrue("Results should be empty", s.isEmpty());
+		// simple false target: aromatic
 		smi = "O=c1ccocc1";
 		s = applySmirks(smirks, smi);
 		Assert.assertTrue("Results should be empty", s.isEmpty());
