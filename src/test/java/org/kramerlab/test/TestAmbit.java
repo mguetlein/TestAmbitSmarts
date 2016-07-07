@@ -1,7 +1,12 @@
 package org.kramerlab.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,7 +39,9 @@ public class TestAmbit
 	{
 		String smirks = "[#8-:10]-[#6:9](=[O:11])-[#6:1]-1=[CH1]-[#6;H1:5]=[#6;H1:4]-[#6;H1:3]=[#6;H1:2]-1>>O-[#6:5](=O)-[#6;H2:4]\\[#6;H1:3]=[#6;H1:2]/[#6;H2:1]-[#6:9](-[#8-:10])=[O:11]";
 		String smi = "O=C([O-])C1=CC=CC=C1";
-		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
+		List<String> products = applySmirks(smirks, smi);
+		Map<String, String> diff = diffProductToReference(products, new String[]{"OC(=O)C\\C=C/CC([O-])=O"});
+		Assert.assertTrue(""+diff, null == diff);
 	}
 
 	@Test
@@ -57,11 +64,12 @@ public class TestAmbit
 	@Test
 	public void aromaticRingWithOxygen_rule4150_u56188()
 	{
-		String smirks = "[#6:4]@-!:[#6;!$(C1(=O)C=CC(=O)C=C1)!$(C(=O)CC=O):1](@-!:[#6:2])=[O:5]>>[#6:2]@-[#8]@-[#6:1](@-[#6:4])=[O:5]";
+		String smirks = "[#6:4]@-&!:[#6;!$(C1(=O)C=CC(=O)C=C1)!$(C(=O)CC=O):1](@-&!:[#6:2])=[O:5]>>[#6:2]@-[#8]@-[#6:1](@-[#6:4])=[O:5]";
 		// simple true target
 		String smi = "O=C1CCOC=C1";
 		List<String> s = applySmirks(smirks, smi);
-		Assert.assertFalse("Results should not be empty", s.isEmpty());
+		Map<String, String> diff = diffProductToReference(s, new String[]{"C1=COCCOC1=O","C1COC=COC1=O"});
+		Assert.assertTrue(""+diff, null == diff);
 		// simple false target: no ring
 		smi = "O=C(C)C";
 		s = applySmirks(smirks, smi);
@@ -80,6 +88,23 @@ public class TestAmbit
 		Assert.assertTrue("Results should be empty", s.isEmpty());
 	}
 
+	public Map<String,String> diffProductToReference(List<String> products, String[] reference) {
+		Set<String> p = new HashSet<String>();
+		p.addAll(products);
+		Set<String> r = new HashSet<String>();
+		r.addAll(Arrays.asList(reference));
+		diffSmiles(p,r);
+		if (p.isEmpty() && r.isEmpty()) return null;
+		Map<String,String> diff = new HashMap<String,String>();
+		for (String notInReference : p) {
+			diff.put(notInReference, "notInReference");
+		}
+		for (String notInProducts : r) {
+			diff.put(notInProducts, "notInProducts");
+		}
+		return diff;
+	}
+	
 	public static List<String> applySmirks(String smrk, String smi)
 	{
 		try
@@ -141,6 +166,43 @@ public class TestAmbit
 			System.err.println("SMILES " + smi);
 			e.printStackTrace();
 			return null;
+		}
+	}
+	
+	/**
+	 * compares smiles string
+	 * @param smiA
+	 * @param smiB
+	 * @return true if smiA and smiB are equal
+	 */
+	public static boolean sameSame(String smiA, String smiB) {
+		/*
+		 * TODO: compare standardized smiles
+		 */
+		return smiA.equals(smiB);
+	}
+	
+	/**
+	 * removes intersection from both sets, based on the {@link #sameSame(String, String)} comparing method
+	 * @param smilesA
+	 * @param smilesB
+	 */
+	public static void diffSmiles(Set<String> smilesA, Set<String> smilesB) {
+		try {
+			for (String smiA : smilesA) {
+				for (String smiB : smilesB) {
+					if (sameSame(smiA, smiB)) {
+						smilesA.remove(smiA);
+						smilesB.remove(smiB);
+						diffSmiles(smilesA, smilesB);
+						return;
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.err.println(smilesA);
+			System.err.println(smilesB);
+			e.printStackTrace();
 		}
 	}
 
