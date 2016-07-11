@@ -75,6 +75,46 @@ public class TestAmbit
 		Assert.assertTrue(""+diff, null == diff);
 	}
 
+	@Test
+	public void ringSplit5_rule4224_missing()
+	{
+		String smirks = "[#8:2]([H])-[c:10]1[#6,#7;a:9][c:8][c:7][c:6](-[*,#1:11])[c:5]1-[#8:1]([H])>>[#8-:2]-[#6:10](=O)\\[#6,#7:9]=[#6:8]/[#6:7]=[#6:6](/[*,#1:11])-[#6:5](-[#8-:1])=O";
+		
+		String u97336 = "Oc1ncc2ccccc2c1O";
+		List<String> products = applySmirks(smirks, u97336);
+		Map<String, String> diff = diffProductToReference(products, new String[]{"C1=CC(=C(C=C1)C(=O)[O-])/C=N\\C(=O)[O-]"});
+		Assert.assertTrue(""+diff, null == diff);
+		
+		String u8723 = "CC(C(C)=O)c1cc2c(Cl)nc(O)c(O)c2[nH]1";
+		products = applySmirks(smirks, u8723);
+		diff = diffProductToReference(products, new String[]{"CC(C(C)=O)c1cc(\\C(Cl)=N/C([O-])=O)c([nH]1)C([O-])=O"});
+		Assert.assertTrue(""+diff, null == diff);
+	}
+	
+	@Test
+	public void ringSplit5_rule4224_toomany()
+	{
+		String smirks = "[#8:2]([H])-[c:10]1[#6,#7;a:9][c:8][c:7][c:6](-[*,#1:11])[c:5]1-[#8:1]([H])>>[#8-:2]-[#6:10](=O)\\[#6,#7:9]=[#6:8]/[#6:7]=[#6:6](/[*,#1:11])-[#6:5](-[#8-:1])=O";
+		
+		String smiles = "Nc1ccc(O)c(O)c1";
+		List<String> products = applySmirks(smirks, smiles);
+		Map<String, String> diff = diffProductToReference(products, new String[]{"N\\C(\\C=C/C([O-])=O)=C\\C([O-])=O"});
+		Assert.assertTrue(""+diff, null == diff);
+		
+	}
+	
+	@Test
+	public void ringSplit5_rule4224_valenceError()
+	{
+		String smirks = "[#8:2]([H])-[c:10]1[#6,#7;a:9][c:8][c:7][c:6](-[*,#1:11])[c:5]1-[#8:1]([H])>>[#8-:2]-[#6:10](=O)\\[#6,#7:9]=[#6:8]/[#6:7]=[#6:6](/[*,#1:11])-[#6:5](-[#8-:1])=O";
+		
+		String c0707 = "OCc1ccc2ccc(O)c(O)c2c1";
+		List<String> products = applySmirks(smirks, c0707);
+		Map<String, String> diff = diffProductToReference(products, new String[]{"C1=C(C=C(C(=C1)/C=C\\C(=O)[O-])C(=O)[O-])CO"});
+		Assert.assertTrue(""+diff, null == diff);
+		
+	}
+	
 	public static Map<String,String> diffProductToReference(List<String> products, String[] reference) {
 		Set<String> p = new HashSet<String>();
 		p.addAll(products);
