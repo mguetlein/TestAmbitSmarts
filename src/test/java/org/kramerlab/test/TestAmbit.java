@@ -53,6 +53,27 @@ public class TestAmbit
 		Assert.assertFalse("Results should not be empty",
 				applySmirks(smirks, smi1).isEmpty() || applySmirks(smirks, smi2).isEmpty());
 	}
+	
+	@Test
+	public void ringSplit4_rule4298_u140722()
+	{
+		String smirks = "[#6:11]@-[c:2]1[c;R1:4][c;R1:5][c:6](-[#8:8]([H]))[c:7](-[#8:1]([H]))[c:3]1@-[#6:12]>>[#6:12]-[#6:3](=O)-[#6:2](\\[#6:11])=[#6:4]/[#6:5]=[#6:6](/[#8:8]([H]))-[#6:7](-[O-])=[O:1]";
+		
+		String onceAromatic = "Oc1ccc2CCCCc2c1O";
+		List<String> products = applySmirks(smirks, onceAromatic);
+		Map<String, String> diff = diffProductToReference(products, new String[]{"O\\C(=C\\C=C1\\CCCCC1=O)C([O-])=O"});
+		Assert.assertTrue(""+diff, null == diff);
+		
+		String twiceAromatic = "Oc1ccc2ccccc2c1O";
+		products = applySmirks(smirks, twiceAromatic);
+		diff = diffProductToReference(products, new String[]{"O\\C(=C\\C=C1\\C=CC=CC1=O)C([O-])=O"});
+		Assert.assertTrue(""+diff, null == diff);
+		
+		String smiles_u140722 = "OCc1cc(O)c(O)c2cccc(C([O-])=O)c12";
+		products = applySmirks(smirks, smiles_u140722);
+		diff = diffProductToReference(products, new String[]{"C1=CC(=O)\\C(=C(/C=C(\\C(=O)[O-])/O)\\CO)\\C(=C1)C(=O)[O-]"});
+		Assert.assertTrue(""+diff, null == diff);
+	}
 
 	public static Map<String,String> diffProductToReference(List<String> products, String[] reference) {
 		Set<String> p = new HashSet<String>();
