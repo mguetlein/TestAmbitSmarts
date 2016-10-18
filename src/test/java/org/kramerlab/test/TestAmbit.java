@@ -1,7 +1,12 @@
 package org.kramerlab.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,48 +54,14 @@ public class TestAmbit
 		Assert.assertTrue(s.contains(expectedSmiles));
 	}
 
-	@Test
-	public void stereoChemLost_rule3138_u138720()
-	{
-		String smirks = "[#8:1]([H])-[#6:2](-[#6:9](-[#8-:10])=[O:11])=[#6:3](-[#1,#6,#17:12])-[#6:4]=[#6:5]-[#6](-[#8-])=O>>[#8-:10]-[#6:9](=[O:11])-[#6:2](=[O:1])-[#6:3](-[#1,#6,#17:12])-[#6:4]=[#6:5]";
-		String smi = "C(=C(/C(=O)[O-])\\Cl)/C=C(\\C(=O)[O-])/O";
-		String expectedSmiles;
-		try
-		{
-			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
-					.parseSmiles("[O-]C(=O)C(=O)C\\C=C\\Cl");
-			expectedSmiles = SmilesGenerator.absolute().create(mol);
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e);
-		}
-		List<String> s = applySmirks(smirks, smi);
-		Assert.assertEquals(expectedSmiles, s.get(0));
-	}
-
-	@Test
-	public void ringSplit1_arom_rule4224_ar13()
-	{
-		String smirks = "[#8;H1:2]-[#6:10]1:[#6:5](-[#8;H1:1]):[#6:6](-[*,#1:11]):[#6:7]:[#6:8]:[#6,#7:9]:1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
-		String smi = "O-C(=C-C=C-C=O)C([O-])=O";
-		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
-	}
-
-	@Test
-	public void ringSplit1_kekulized_rule4224_ar13()
-	{
-		String smirks = "[#8;H1:2]-[#6:10]1=[#6:5](-[#8;H1:1])-[#6:6](-[*,#1:11])=[#6:7]-[#6:8]=[#6,#7:9]-1>>[#8&-:2]-[#6:10](=O)-[#6,#7:9]=[#6:8]-[#6:7]=[#6:6](-[*,#1:11])-[#6:5](-[#8&-:1])=O";
-		String smi = "O-C(=C-C=C-C=O)C([O-])=O";
-		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
-	}
-
-	@Test
 	public void ringSplit2_rule4287()
 	{
 		String smirks = "[#8-:10]-[#6:9](=[O:11])-[#6:1]-1=[CH1]-[#6;H1:5]=[#6;H1:4]-[#6;H1:3]=[#6;H1:2]-1>>O-[#6:5](=O)-[#6;H2:4]\\[#6;H1:3]=[#6;H1:2]/[#6;H2:1]-[#6:9](-[#8-:10])=[O:11]";
 		String smi = "O=C([O-])C1=CC=CC=C1";
-		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
+		List<String> products = applySmirks(smirks, smi);
+		Map<String, String> diff = diffProductToReference(products,
+				new String[] { "OC(=O)C\\C=C/CC([O-])=O" });
+		Assert.assertTrue("" + diff, null == diff);
 	}
 
 	@Test
@@ -104,30 +75,94 @@ public class TestAmbit
 	}
 
 	@Test
-	public void complexCarbonStructure_rule3803_c0630()
+	public void ringSplit4_rule4298_u140722()
 	{
-		// was working in cdk1.4
-		String smirks = "[H][C;R1:3]([H:2])([#6;X4:5])[#6;X4:6]>>[H:2][C;R1:3]([#6;X4:5])([#6;X4:6])O";
-		String smi = "CC1(C)C2CC1C(CO)=CC2";
-		List<String> s = applySmirks(smirks, smi);
-		Assert.assertFalse("Results should not be empty", s.isEmpty());
+		String smirks = "[#6:11]@-[c:2]1[c;R1:4][c;R1:5][c:6](-[#8:8]([H]))[c:7](-[#8:1]([H]))[c:3]1@-[#6:12]>>[#6:12]-[#6:3](=O)-[#6:2](\\[#6:11])=[#6:4]/[#6:5]=[#6:6](/[#8:8]([H]))-[#6:7](-[O-])=[O:1]";
+
+		String onceAromatic = "Oc1ccc2CCCCc2c1O";
+		List<String> products = applySmirks(smirks, onceAromatic);
+		Map<String, String> diff = diffProductToReference(products,
+				new String[] { "O\\C(=C\\C=C1\\CCCCC1=O)C([O-])=O" });
+		Assert.assertTrue("" + diff, null == diff);
+
+		String twiceAromatic = "Oc1ccc2ccccc2c1O";
+		products = applySmirks(smirks, twiceAromatic);
+		diff = diffProductToReference(products,
+				new String[] { "O\\C(=C\\C=C1\\C=CC=CC1=O)C([O-])=O" });
+		Assert.assertTrue("" + diff, null == diff);
+
+		String smiles_u140722 = "OCc1cc(O)c(O)c2cccc(C([O-])=O)c12";
+		products = applySmirks(smirks, smiles_u140722);
+		diff = diffProductToReference(products,
+				new String[] { "C1=CC(=O)\\C(=C(/C=C(\\C(=O)[O-])/O)\\CO)\\C(=C1)C(=O)[O-]" });
+		Assert.assertTrue("" + diff, null == diff);
 	}
 
 	@Test
-	public void missingProducts_rule2793_u26103()
+	public void ringSplit5_rule4224_missing()
 	{
-		String smirks = "[#8:8]([H])-[c:2]1[c:1](-[#8:7]([H]))[c;R]([c;R:5](-[!#8,#1:11])[c;R:4](-[!#8,#1:10])[c;R:3]1-[!#8,#1:9])S([#8])(=O)=O>>[!#8,#1:11]\\\\\\[#6:5]=[#6:4](///[!#8,#1:10])-[#6:3](-[!#8,#1:9])-[#6:2](=[O:8])-[#6:1](-[#8-])=[O:7]";
-		String smi = "C1=C(C=CC(=C1)C2=NC3=C(C(=C(C=C3N2)S(=O)(=O)[O-])O)O)C4=NC5=C(C=C(C=C5S(=O)(=O)[O-])S(=O)(=O)[O-])N4";
-		// working smiles example: C1=CC(=C(C(=C1N)S(=O)(=O)[O-])O)O
-		Assert.assertFalse("Results should not be empty", applySmirks(smirks, smi).isEmpty());
+		String smirks = "[#8:2]([H])-[c:10]1[#6,#7;a:9][c:8][c:7][c:6](-[*,#1:11])[c:5]1-[#8:1]([H])>>[#8-:2]-[#6:10](=O)\\[#6,#7:9]=[#6:8]/[#6:7]=[#6:6](/[*,#1:11])-[#6:5](-[#8-:1])=O";
+
+		String u97336 = "Oc1ncc2ccccc2c1O";
+		List<String> products = applySmirks(smirks, u97336);
+		Map<String, String> diff = diffProductToReference(products,
+				new String[] { "C1=CC(=C(C=C1)C(=O)[O-])/C=N\\C(=O)[O-]" });
+		Assert.assertTrue("" + diff, null == diff);
+
+		String u8723 = "CC(C(C)=O)c1cc2c(Cl)nc(O)c(O)c2[nH]1";
+		products = applySmirks(smirks, u8723);
+		diff = diffProductToReference(products,
+				new String[] { "CC(C(C)=O)c1cc(\\C(Cl)=N/C([O-])=O)c([nH]1)C([O-])=O" });
+		Assert.assertTrue("" + diff, null == diff);
 	}
 
-	//	public void productToSmilesError_rule3707_u143203()
-	//	{
-	//		String smirks = "[H:10][#8:9]-[c:4]1[c;R1:5][c;R1:6][c:1]([H])[c;R1:7][c;R1:8]1>>[H:10][#8:9]-[c:4]1[c;R1:5][c;R1:6][c:1](-[#8])[c;R1:7][c;R1:8]1";
-	//		String smi = "C1=CC=C(C=C1)/C(=C\\2\\C=C(\\C(=C(\\C3=CC(=C(C=C3)O)O)/C(=O)[O-])\\C=C2O)O)/C(=O)[O-]";
-	//		Assert.assertNotNull("Reaction should not fail", applySmirks(smirks, smi));
-	//	}	
+	@Test
+	public void ringSplit5_rule4224_toomany()
+	{
+		String smirks = "[#8:2]([H])-[c:10]1[#6,#7;a:9][c:8][c:7][c:6](-[*,#1:11])[c:5]1-[#8:1]([H])>>[#8-:2]-[#6:10](=O)\\[#6,#7:9]=[#6:8]/[#6:7]=[#6:6](/[*,#1:11])-[#6:5](-[#8-:1])=O";
+
+		String smiles = "Nc1ccc(O)c(O)c1";
+		List<String> products = applySmirks(smirks, smiles);
+		Map<String, String> diff = diffProductToReference(products,
+				new String[] { "N\\C(\\C=C/C([O-])=O)=C\\C([O-])=O" });
+		Assert.assertTrue("" + diff, null == diff);
+
+	}
+
+	@Test
+	public void ringSplit5_rule4224_valenceError()
+	{
+		String smirks = "[#8:2]([H])-[c:10]1[#6,#7;a:9][c:8][c:7][c:6](-[*,#1:11])[c:5]1-[#8:1]([H])>>[#8-:2]-[#6:10](=O)\\[#6,#7:9]=[#6:8]/[#6:7]=[#6:6](/[*,#1:11])-[#6:5](-[#8-:1])=O";
+
+		String c0707 = "OCc1ccc2ccc(O)c(O)c2c1";
+		List<String> products = applySmirks(smirks, c0707);
+		Map<String, String> diff = diffProductToReference(products,
+				new String[] { "C1=C(C=C(C(=C1)/C=C\\C(=O)[O-])C(=O)[O-])CO" });
+		Assert.assertTrue("" + diff, null == diff);
+
+	}
+
+	public static Map<String, String> diffProductToReference(List<String> products,
+			String[] reference)
+	{
+		Set<String> p = new HashSet<String>();
+		p.addAll(products);
+		Set<String> r = new HashSet<String>();
+		r.addAll(Arrays.asList(reference));
+		diffSmiles(p, r);
+		if (p.isEmpty() && r.isEmpty())
+			return null;
+		Map<String, String> diff = new HashMap<String, String>();
+		for (String notInReference : p)
+		{
+			diff.put(notInReference, "notInReference");
+		}
+		for (String notInProducts : r)
+		{
+			diff.put(notInProducts, "notInProducts");
+		}
+		return diff;
+	}
 
 	public static List<String> applySmirks(String smrk, String smi)
 	{
@@ -190,6 +225,42 @@ public class TestAmbit
 			System.err.println("SMILES " + smi);
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	/**
+	 * compares smiles string
+	 * @param smiA
+	 * @param smiB
+	 * @return true if smiA and smiB are equal
+	 */
+	public static boolean sameSame(String smiA, String smiB)
+	{
+		/*
+		 * TODO: compare standardized smiles
+		 */
+		return smiA.equals(smiB);
+	}
+
+	/**
+	 * removes intersection from both sets, based on the {@link #sameSame(String, String)} comparing method
+	 * @param smilesA
+	 * @param smilesB
+	 */
+	public static void diffSmiles(Set<String> smilesA, Set<String> smilesB)
+	{
+		for (String smiA : smilesA)
+		{
+			for (String smiB : smilesB)
+			{
+				if (sameSame(smiA, smiB))
+				{
+					smilesA.remove(smiA);
+					smilesB.remove(smiB);
+					diffSmiles(smilesA, smilesB);
+					return;
+				}
+			}
 		}
 	}
 
