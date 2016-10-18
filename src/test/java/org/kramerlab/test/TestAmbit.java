@@ -30,6 +30,26 @@ import ambit2.smarts.SmartsConst;
 public class TestAmbit
 {
 	@Test
+	public void stereoChemNotAdded_rule2978_c0105()
+	{
+		String smirks = "[c:1]1[c:6]([H])[c:5]([H])[c:4][c:3][c:2]1>>[#8]([H])-[#6@H:5]-1-[#6:4]=[#6:3]-[#6:2]=[#6:1]-[#6@H:6]-1-[#8]([H])";
+		String smi = "Clc1ccccc1";
+		String expectedSmiles;
+		try
+		{
+			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
+					.parseSmiles("C1=C[C@H]([C@H](C(=C1)Cl)O)O");
+			expectedSmiles = SmilesGenerator.absolute().create(mol);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+		List<String> s = applySmirks(smirks, smi);
+		Assert.assertTrue(s.contains(expectedSmiles));
+	}
+
+	@Test
 	public void stereoChemLost_rule3138_u138720()
 	{
 		String smirks = "[#8:1]([H])-[#6:2](-[#6:9](-[#8-:10])=[O:11])=[#6:3](-[#1,#6,#17:12])-[#6:4]=[#6:5]-[#6](-[#8-])=O>>[#8-:10]-[#6:9](=[O:11])-[#6:2](=[O:1])-[#6:3](-[#1,#6,#17:12])-[#6:4]=[#6:5]";

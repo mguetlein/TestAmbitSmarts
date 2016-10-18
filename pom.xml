@@ -49,7 +49,7 @@
   </build>
   
   <properties>
-     <cdk.version>1.5.13</cdk.version>
+     <cdk.version>1.5.14</cdk.version>
     <ambit.version>3.0.3-SNAPSHOT</ambit.version>
   </properties>
   
@@ -57,21 +57,19 @@
     <repositories>
     
     <repository>
-      <id>ambit-plovdiv-snapshots</id>
-      <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/snapshots/</url>
-      <snapshots>
-	    <enabled>true</enabled>
-      </snapshots>
+      <id>nexus-idea</id>
+      <url>https://nexus.ideaconsult.net/content/repositories/thirdparty</url>
     </repository>
-    
     <repository>
-      <id>ambit-plovdiv-3rdparty</id>
-      <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/thirdparty/</url>
+      <id>nexus-idea-releases</id>
+      <url>https://nexus.ideaconsult.net/content/repositories/releases</url>
     </repository>
-
-   <repository>
-      <id>ambit-plovdiv-releases</id>
-      <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/releases</url>
+    <repository>
+      <id>nexus-idea-snapshots</id>
+      <url>https://nexus.ideaconsult.net/content/repositories/snapshots</url>
+      <snapshots>
+	<enabled>true</enabled>
+      </snapshots> 
     </repository>
 	
     <repository>
