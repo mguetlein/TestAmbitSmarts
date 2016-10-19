@@ -35,7 +35,29 @@ import ambit2.smarts.SmartsConst;
 public class TestAmbit
 {
 	@Test
-	public void stereoChemNotAdded_rule2978_c0105()
+	// https://sourceforge.net/p/ambit/bugs/106/
+	public void smirksNotMatchingAllRingsInPolycyclicAromaticCompound_rule4282_c0857()
+	{
+		String smirks = "[H][c:1]1[c:7][c:10][c:9][#6,#7;a:8][c:2]1[H]>>[#8]-[c:1]1[c:7][c:10][c:9][#6,#7;a:8][c:2]1-[#8]";
+		String smi = "O=c1ccc2ccc3ccc(=O)c4ccc1c2c34";
+		String expectedSmiles;
+		try
+		{
+			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
+					.parseSmiles("C1=CC2=C3C(=CC=C4C(=O)C=CC1=C43)C(=O)C(=C2O)O");
+			expectedSmiles = SmilesGenerator.absolute().create(mol);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+		List<String> s = applySmirks(smirks, smi);
+		Assert.assertTrue(s.contains(expectedSmiles));
+	}
+
+	@Test
+	// https://sourceforge.net/p/ambit/bugs/107/
+	public void chiralityInformationNotAdded_rule2978_c0105()
 	{
 		String smirks = "[c:1]1[c:6]([H])[c:5]([H])[c:4][c:3][c:2]1>>[#8]([H])-[#6@H:5]-1-[#6:4]=[#6:3]-[#6:2]=[#6:1]-[#6@H:6]-1-[#8]([H])";
 		String smi = "Clc1ccccc1";
@@ -267,7 +289,7 @@ public class TestAmbit
 	public static void main(String[] args) throws CDKException
 	{
 		TestAmbit t = new TestAmbit();
-		t.ringSplit3_rule3743_u50144_u137948();
+		t.smirksNotMatchingAllRingsInPolycyclicAromaticCompound_rule4282_c0857();
 		//		t.productToSmilesError_rule3707_u143203();
 	}
 }
