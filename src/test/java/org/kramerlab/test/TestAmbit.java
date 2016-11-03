@@ -35,6 +35,27 @@ import ambit2.smarts.SmartsConst;
 public class TestAmbit
 {
 	@Test
+	// https://sourceforge.net/p/ambit/bugs/108/
+	public void aromBondNotAddedInSmirksWithSmartsBonds_rule2690_c0138()
+	{
+		String smirks = "[#6:9]=,:[#6:10]@-[C:6]([H])([#8:2][H:11])[C:5]([H])(@-[#6:7]=,:[#6:8])[#8:1][H:12]>>[H:12][#8:1]-[c:5](:[c:7]:[c:8]):[c:6](-[#8:2][H:11]):[c:10]:[c:9]";
+		String smi = "O[C@@H]1C=CC=C(Cl)[C@@H]1O";
+		String expectedSmiles;
+		try
+		{
+			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
+					.parseSmiles("C1=CC(=C(C(=C1)Cl)O)O");
+			expectedSmiles = SmilesGenerator.absolute().create(mol);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+		List<String> s = applySmirks(smirks, smi);
+		Assert.assertTrue(s.contains(expectedSmiles));
+	}
+
+	@Test
 	// https://sourceforge.net/p/ambit/bugs/106/
 	public void smirksNotMatchingAllRingsInPolycyclicAromaticCompound_rule4282_c0857()
 	{
@@ -289,7 +310,7 @@ public class TestAmbit
 	public static void main(String[] args) throws CDKException
 	{
 		TestAmbit t = new TestAmbit();
-		t.smirksNotMatchingAllRingsInPolycyclicAromaticCompound_rule4282_c0857();
+		t.aromBondNotAddedInSmirksWithSmartsBonds_rule2690_c0138();
 		//		t.productToSmilesError_rule3707_u143203();
 	}
 }
