@@ -35,6 +35,31 @@ import ambit2.smarts.SmartsConst;
 public class TestAmbit
 {
 	@Test
+	// https://sourceforge.net/p/ambit/bugs/109/
+	public void smirksIncludingDegreeOfConnectionsNotWorking_4297_c0857()
+	{
+		String smirks_4297 = "[#8:4]-,=[#6;D3R0:1](-[#6:2])!@-[#6:3]-[#6:8](=[O:10])-[#6:7](-[#8-:6])=[O:9]>>[#6:3]-[#6:8](=[O:10])-[#6:7](-[#8-:6])=[O:9].[#6:2]-[#6:1](-[#8-])=[O:4]";
+		String smi_c1248 = "OC(CCl)CC(=O)C([O-])=O";
+		String expectedSmiles1;
+		String expectedSmiles2;
+		try
+		{
+			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
+					.parseSmiles("CC(=O)C(=O)[O-]");
+			expectedSmiles1 = SmilesGenerator.absolute().create(mol);
+			mol = new SmilesParser(SilentChemObjectBuilder.getInstance()).parseSmiles("C(C=O)Cl");
+			expectedSmiles2 = SmilesGenerator.absolute().create(mol);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+		List<String> s = applySmirks(smirks_4297, smi_c1248);
+		Assert.assertTrue(s.contains(expectedSmiles1));
+		Assert.assertTrue(s.contains(expectedSmiles2));
+	}
+
+	@Test
 	// https://sourceforge.net/p/ambit/bugs/106/
 	public void smirksNotMatchingAllRingsInPolycyclicAromaticCompound_rule4282_c0857()
 	{
@@ -290,7 +315,7 @@ public class TestAmbit
 	public static void main(String[] args) throws CDKException
 	{
 		TestAmbit t = new TestAmbit();
-		//t.aromBondNotAddedInSmirksWithSmartsBonds_rule2690_c0138();
+		t.smirksIncludingDegreeOfConnectionsNotWorking_4297_c0857();
 		//		t.productToSmilesError_rule3707_u143203();
 	}
 }
