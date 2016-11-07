@@ -173,6 +173,7 @@ public class TestAmbit
 	}
 
 	@Test
+	// https://sourceforge.net/p/ambit/bugs/104/
 	public void ringSplit5_rule4224_valenceError()
 	{
 		String smirks = "[#8:2]([H])-[c:10]1[#6,#7;a:9][c:8][c:7][c:6](-[*,#1:11])[c:5]1-[#8:1]([H])>>[#8-:2]-[#6:10](=O)\\[#6,#7:9]=[#6:8]/[#6:7]=[#6:6](/[*,#1:11])-[#6:5](-[#8-:1])=O";
