@@ -15,6 +15,28 @@ import org.openscience.cdk.smiles.SmilesParser;
 @RunWith(JUnit4.class)
 public class TestAmbitFixed
 {
+	@Test
+	// fixed: Revision: 7934 http://sourceforge.net/p/ambit/code/7934
+	// https://sourceforge.net/p/ambit/bugs/107/
+	public void chiralityInformationNotAdded_rule2978_c0105()
+	{
+		String smirks = "[c:1]1[c:6]([H])[c:5]([H])[c:4][c:3][c:2]1>>[#8]([H])-[#6@H:5]-1-[#6:4]=[#6:3]-[#6:2]=[#6:1]-[#6@H:6]-1-[#8]([H])";
+		String smi = "Clc1ccccc1";
+		String expectedSmiles;
+		try
+		{
+			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
+					.parseSmiles("C1=C[C@H]([C@H](C(=C1)Cl)O)O");
+			expectedSmiles = SmilesGenerator.absolute().create(mol);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+		List<String> s = applySmirks(smirks, smi);
+		Assert.assertTrue(s.contains(expectedSmiles));
+	}
+
 	// fixed with stereo bug fix 14.06.2016
 	@Test
 	public void stereoChemNotInserted1_rule4230_u145861()
@@ -203,12 +225,12 @@ public class TestAmbitFixed
 		String smi = "C1=CC=C(C=C1)/C(=C2\\C=C(\\C(=C(\\C3=CC(=C(C=C3)O)O)/C(=O)[O-])\\C=C2O)O)/C(=O)[O-]";
 		Assert.assertNotNull("Reaction should not fail", applySmirks(smirks, smi));
 	}
-	
+
 	// fixed by replacing three single bonds with default (single or aromatic) bonds
 	@Test
 	public void missingProducts_rule2793_u26103()
 	{
-	// original smirks: "[#8:8]([H])-[c:2]1[c:1](-[#8:7]([H]))[c;R]([c;R:5](-[!#8,#1:11])[c;R:4](-[!#8,#1:10])[c;R:3]1-[!#8,#1:9])S([#8])(=O)=O>>[!#8,#1:11]\\\\\\[#6:5]=[#6:4](///[!#8,#1:10])-[#6:3](-[!#8,#1:9])-[#6:2](=[O:8])-[#6:1](-[#8-])=[O:7]";
+		// original smirks: "[#8:8]([H])-[c:2]1[c:1](-[#8:7]([H]))[c;R]([c;R:5](-[!#8,#1:11])[c;R:4](-[!#8,#1:10])[c;R:3]1-[!#8,#1:9])S([#8])(=O)=O>>[!#8,#1:11]\\\\\\[#6:5]=[#6:4](///[!#8,#1:10])-[#6:3](-[!#8,#1:9])-[#6:2](=[O:8])-[#6:1](-[#8-])=[O:7]";
 		String smirks = "[#8:8]([H])-[c:2]1[c:1](-[#8:7]([H]))[c;R]([c;R:5]([!#8,#1:11])[c;R:4]([!#8,#1:10])[c;R:3]1[!#8,#1:9])S([#8])(=O)=O>>[!#8,#1:11]\\[#6:5]=[#6:4](/[!#8,#1:10])-[#6:3](-[!#8,#1:9])-[#6:2](=[O:8])-[#6:1](-[#8-])=[O:7]";
 		String smi = "C1=C(C=CC(=C1)C2=NC3=C(C(=C(C=C3N2)S(=O)(=O)[O-])O)O)C4=NC5=C(C=C(C=C5S(=O)(=O)[O-])S(=O)(=O)[O-])N4";
 		// working smiles example: C1=CC(=C(C(=C1N)S(=O)(=O)[O-])O)O
@@ -247,8 +269,9 @@ public class TestAmbitFixed
 		// simple true target
 		String smi = "O=C1CCOC=C1";
 		List<String> s = applySmirks(smirks, smi);
-		Map<String, String> diff = diffProductToReference(s, new String[]{"C1=COCCOC1=O","C1COC=COC1=O"});
-		Assert.assertTrue(""+diff, null == diff);
+		Map<String, String> diff = diffProductToReference(s,
+				new String[] { "C1=COCCOC1=O", "C1COC=COC1=O" });
+		Assert.assertTrue("" + diff, null == diff);
 		// simple false target: no ring
 		smi = "O=C(C)C";
 		s = applySmirks(smirks, smi);
@@ -271,7 +294,9 @@ public class TestAmbitFixed
 	{
 		return TestAmbit.applySmirks(smrk, smi);
 	}
-	public static Map<String,String> diffProductToReference(List<String> products, String[] reference)
+
+	public static Map<String, String> diffProductToReference(List<String> products,
+			String[] reference)
 	{
 		return TestAmbit.diffProductToReference(products, reference);
 	}

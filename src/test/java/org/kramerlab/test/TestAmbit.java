@@ -34,72 +34,6 @@ import ambit2.smarts.SmartsConst;
 @RunWith(JUnit4.class)
 public class TestAmbit
 {
-	@Test
-	// https://sourceforge.net/p/ambit/bugs/109/
-	public void smirksIncludingDegreeOfConnectionsNotWorking_4297_c0857()
-	{
-		String smirks_4297 = "[#8:4]-,=[#6;D3R0:1](-[#6:2])!@-[#6:3]-[#6:8](=[O:10])-[#6:7](-[#8-:6])=[O:9]>>[#6:3]-[#6:8](=[O:10])-[#6:7](-[#8-:6])=[O:9].[#6:2]-[#6:1](-[#8-])=[O:4]";
-		String smi_c1248 = "OC(CCl)CC(=O)C([O-])=O";
-		String expectedSmiles1;
-		String expectedSmiles2;
-		try
-		{
-			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
-					.parseSmiles("CC(=O)C(=O)[O-]");
-			expectedSmiles1 = SmilesGenerator.absolute().create(mol);
-			mol = new SmilesParser(SilentChemObjectBuilder.getInstance()).parseSmiles("C(C=O)Cl");
-			expectedSmiles2 = SmilesGenerator.absolute().create(mol);
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e);
-		}
-		List<String> s = applySmirks(smirks_4297, smi_c1248);
-		Assert.assertTrue(s.contains(expectedSmiles1));
-		Assert.assertTrue(s.contains(expectedSmiles2));
-	}
-
-	@Test
-	// https://sourceforge.net/p/ambit/bugs/106/
-	public void smirksNotMatchingAllRingsInPolycyclicAromaticCompound_rule4282_c0857()
-	{
-		String smirks = "[H][c:1]1[c:7][c:10][c:9][#6,#7;a:8][c:2]1[H]>>[#8]-[c:1]1[c:7][c:10][c:9][#6,#7;a:8][c:2]1-[#8]";
-		String smi = "O=c1ccc2ccc3ccc(=O)c4ccc1c2c34";
-		String expectedSmiles;
-		try
-		{
-			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
-					.parseSmiles("C1=CC2=C3C(=CC=C4C(=O)C=CC1=C43)C(=O)C(=C2O)O");
-			expectedSmiles = SmilesGenerator.absolute().create(mol);
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e);
-		}
-		List<String> s = applySmirks(smirks, smi);
-		Assert.assertTrue(s.contains(expectedSmiles));
-	}
-
-	@Test
-	// https://sourceforge.net/p/ambit/bugs/107/
-	public void chiralityInformationNotAdded_rule2978_c0105()
-	{
-		String smirks = "[c:1]1[c:6]([H])[c:5]([H])[c:4][c:3][c:2]1>>[#8]([H])-[#6@H:5]-1-[#6:4]=[#6:3]-[#6:2]=[#6:1]-[#6@H:6]-1-[#8]([H])";
-		String smi = "Clc1ccccc1";
-		String expectedSmiles;
-		try
-		{
-			IAtomContainer mol = new SmilesParser(SilentChemObjectBuilder.getInstance())
-					.parseSmiles("C1=C[C@H]([C@H](C(=C1)Cl)O)O");
-			expectedSmiles = SmilesGenerator.absolute().create(mol);
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e);
-		}
-		List<String> s = applySmirks(smirks, smi);
-		Assert.assertTrue(s.contains(expectedSmiles));
-	}
 
 	public void ringSplit2_rule4287()
 	{
@@ -315,7 +249,7 @@ public class TestAmbit
 	public static void main(String[] args) throws CDKException
 	{
 		TestAmbit t = new TestAmbit();
-		t.smirksIncludingDegreeOfConnectionsNotWorking_4297_c0857();
+		// t.chiralityInformationNotAdded_rule2978_c0105();
 		//		t.productToSmilesError_rule3707_u143203();
 	}
 }
