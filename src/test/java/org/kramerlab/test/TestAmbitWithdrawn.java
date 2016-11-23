@@ -19,7 +19,8 @@ public class TestAmbitWithdrawn
 	public void smirksIncludingDegreeOfConnectionsNotWorking_4297_c0857()
 	{
 		String smirks_4297_old = "[#8:4]-,=[#6;D3R0:1](-[#6:2])!@-[#6:3]-[#6:8](=[O:10])-[#6:7](-[#8-:6])=[O:9]>>[#6:3]-[#6:8](=[O:10])-[#6:7](-[#8-:6])=[O:9].[#6:2]-[#6:1](-[#8-])=[O:4]";
-		String smirks_4297_new = "[#8:4]([H,!H])-,=[#6;D3,D4H1;R0:1]([H,!H])(-[#6:2])!@-[#6:3]-[#6:8](=[O:10])-[#6:7](-[#8-:6])=[O:9]>>[#6:3]-[#6:8](=[O:10])-[#6:7](-[#8-:6])=[O:9].[#6:2]-[#6:1](-[#8-])=[O:4]";
+		String smirks_4297_1 = "[#8:4]=[#6;D3,D4H1;R0:1](-[#6:2])!@-[#6:3]-[#6:8](=[O:10])-[#6:7](-[#8-:6])=[O:9]>>[#6:3]-[#6:8](=[O:10])-[#6:7](-[#8-:6])=[O:9].[#6:2]-[#6:1](-[#8-])=[O:4]";
+		String smirks_4297_2 = "[H][#8:4]-[#6;D3,D4H1;R0:1]([H])(-[#6:2])!@-[#6:3]-[#6:8](=[O:10])-[#6:7](-[#8-:6])=[O:9]>>[#6:3]-[#6:8](=[O:10])-[#6:7](-[#8-:6])=[O:9].[#6:2]-[#6:1](-[#8-])=[O:4]";
 
 		String expectedSmiles1;
 		String expectedSmiles2;
@@ -39,19 +40,35 @@ public class TestAmbitWithdrawn
 		System.out.println(expectedSmiles1);
 		System.out.println(expectedSmiles2);
 
-		for (String smirks : new String[] { smirks_4297_old, smirks_4297_new })
+		for (String smirks : new String[] { smirks_4297_old, smirks_4297_1, smirks_4297_2 })
 		{
 			String smi_c1248 = "OC(CCl)CC(=O)C([O-])=O";
 			List<String> s = applySmirks(smirks, smi_c1248);
 
-			if (smirks.equals(smirks_4297_old))
+			if (smirks.equals(smirks_4297_2))
 			{
-				Assert.assertEquals(s.size(), 0);
+				Assert.assertTrue(s.get(0).toString(), s.get(0).contains(expectedSmiles1));
+				Assert.assertTrue(s.get(0).toString(), s.get(0).contains(expectedSmiles2));
 			}
 			else
 			{
-				Assert.assertTrue(s.get(0).contains(expectedSmiles1));
-				Assert.assertTrue(s.get(0).contains(expectedSmiles2));
+				Assert.assertEquals(s.size(), 0);
+			}
+		}
+		
+		for (String smirks : new String[] { smirks_4297_1, smirks_4297_2 })
+		{
+			String smi_c1248_altered = "O=C(CCl)CC(=O)C([O-])=O";
+			List<String> s = applySmirks(smirks, smi_c1248_altered);
+
+			if (smirks.equals(smirks_4297_1))
+			{
+				Assert.assertTrue(s.get(0).toString(), s.get(0).contains(expectedSmiles1));
+				Assert.assertTrue(s.get(0).toString(), s.get(0).contains(expectedSmiles2));
+			}
+			else
+			{
+				Assert.assertEquals(s.size(), 0);
 			}
 		}
 	}
